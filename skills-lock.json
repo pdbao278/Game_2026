@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "skills": {
+    "create-game-assets": {
+      "source": "gamedev-skills/awesome-gamedev-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/disciplines/create-game-assets/SKILL.md",
+      "computedHash": "9fa157004c040ab3de38ac8cc3a7a49238821fcde7e384e0b94b10657c6e6a53"
+    }
+  }
+}

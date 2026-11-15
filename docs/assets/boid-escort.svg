@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32" width="48" height="32">
+  <defs>
+    <filter id="boid-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <linearGradient id="boid-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0077b6" />
+      <stop offset="50%" stop-color="#00f5d4" />
+      <stop offset="85%" stop-color="#ffffff" />
+    </linearGradient>
+
+    <linearGradient id="boid-tail" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f5d4" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#7209b7" stop-opacity="0.4" />
+    </linearGradient>
+  </defs>
+
+  <!-- Đuôi vây cá mềm mại -->
+  <path d="M 14 16 L 3 8 C 6 16, 6 16, 3 24 Z" 
+        fill="url(#boid-tail)" 
+        stroke="#00f5d4" 
+        stroke-width="1" />
+
+  <!-- Thân cá nhỏ hình giọt nước khí động học -->
+  <ellipse cx="26" cy="16" rx="15" ry="8" 
+           fill="url(#boid-grad)" 
+           stroke="#ffffff" 
+           stroke-width="1" 
+           filter="url(#boid-glow)" />
+
+  <!-- Vây bơi nhỏ -->
+  <path d="M 23 18 C 20 23, 26 23, 27 18 Z" fill="#ffffff" opacity="0.7" />
+
+  <!-- Mắt cá con phát sáng -->
+  <circle cx="34" cy="13.5" r="3" fill="#ffffff" />
+  <circle cx="35" cy="13.5" r="1.8" fill="#03045e" />
+  <circle cx="35.6" cy="12.8" r="0.8" fill="#ffffff" />
+
+  <!-- Vạch phản quang trên lưng -->
+  <path d="M 18 12 Q 25 10 30 12" fill="none" stroke="#fee440" stroke-width="1.2" stroke-linecap="round" />
+</svg>

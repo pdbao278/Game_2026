@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 400" width="100" height="400">
+  <defs>
+    <linearGradient id="coral-bottom-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10002b" />
+      <stop offset="40%" stop-color="#3c096c" />
+      <stop offset="85%" stop-color="#7b2cbf" />
+      <stop offset="100%" stop-color="#ff0054" />
+    </linearGradient>
+    <filter id="bottom-glow" x="-20%" y="-10%" width="140%" height="120%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Chân cột san hô nhô lên từ đáy biển -->
+  <path d="M 0 400 L 100 400 L 92 140 L 80 70 L 62 12 L 50 2 L 38 12 L 20 70 L 8 140 Z" fill="url(#coral-bottom-grad)" />
+
+  <!-- Rãnh nứt địa chất phát sáng magma ngầm -->
+  <path d="M 50 390 L 45 250 L 55 140 L 50 15" stroke="#ff0054" stroke-width="2" fill="none" opacity="0.8" />
+  <path d="M 25 380 L 32 260 L 28 170" stroke="#7b2cbf" stroke-width="2.5" fill="none" opacity="0.7" />
+  <path d="M 75 380 L 68 280 L 72 190" stroke="#3c096c" stroke-width="3" fill="none" opacity="0.6" />
+
+  <!-- Chóp nhọn gai san hô màu cam neon (điểm va chạm nguy hiểm) -->
+  <path d="M 50 2 L 50 -8" stroke="#ff5400" stroke-width="4" stroke-linecap="round" filter="url(#bottom-glow)" />
+  <circle cx="50" cy="-8" r="4" fill="#ffbe0b" filter="url(#bottom-glow)" />
+
+  <!-- Tinh thể ngọc phát quang bám thân đá -->
+  <circle cx="62" cy="90" r="4" fill="#00f5d4" opacity="0.9" />
+  <circle cx="38" cy="180" r="5" fill="#ff70a6" opacity="0.85" />
+  <circle cx="55" cy="280" r="3.5" fill="#ffd166" opacity="0.8" />
+</svg>

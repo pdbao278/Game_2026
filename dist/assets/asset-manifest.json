@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "art_direction_brief": "docs/art-direction-brief.md",
+  "project_name": "Aqua Dash - Bioluminescent Odyssey",
+  "assets": [
+    {
+      "id": "item-pearl",
+      "role": "Vật phẩm ngọc trai trong vỏ sò xà cừ phát quang",
+      "path": "public/assets/pearl.svg",
+      "status": "approved",
+      "technical": {
+        "dimensions": "64x64",
+        "format": "svg",
+        "alpha": true,
+        "anchor": "center",
+        "filtering": "smooth"
+      },
+      "visual_locks": [
+        "palette-nacre-white-cyan",
+        "bioluminescent-glow",
+        "clam-shell-shape"
+      ],
+      "source": {
+        "kind": "authored-vector",
+        "creator": "Aqua Dash Team",
+        "license": "MIT",
+        "attribution": "Aqua Dash Project"
+      },
+      "verification": {
+        "native_scale_reviewed": true,
+        "in_engine_reviewed": true,
+        "technical_checks_passed": true,
+        "approved_by": "lead-artist"
+      }
+    },
+    {
+      "id": "item-starfish",
+      "role": "Vật phẩm sao biển dạ quang màu hồng tím neon",
+      "path": "public/assets/starfish.svg",
+      "status": "approved",
+      "technical": {
+        "dimensions": "64x64",
+        "format": "svg",
+        "alpha": true,
+        "anchor": "center",
+        "filtering": "smooth"
+      },
+      "visual_locks": [
+        "palette-neon-magenta-gold",
+        "five-point-symmetry",
+        "bioluminescent-glow"
+      ],
+      "source": {
+        "kind": "authored-vector",
+        "creator": "Aqua Dash Team",
+        "license": "MIT",
+        "attribution": "Aqua Dash Project"
+      },
+      "verification": {
+        "native_scale_reviewed": true,
+        "in_engine_reviewed": true,
+        "technical_checks_passed": true,
+        "approved_by": "lead-artist"
+      }
+    },
+    {
+      "id": "player-swim",
+      "role": "Cá người chơi trạng thái bơi bình thường phát quang xanh ngọc",
+      "path": "public/assets/player-fish.svg",
+      "status": "approved",
+      "technical": {
+        "dimensions": "64x64",
+        "format": "svg",
+        "alpha": true,
+        "anchor": "center",
+        "filtering": "smooth"
+      },
+      "visual_locks": [
+        "angler-lure-light",
+        "cyan-gradient-body",
+        "expressive-eye",
+        "translucent-fins"
+      ],
+      "source": {
+        "kind": "authored-vector",
+        "creator": "Aqua Dash Team",
+        "license": "MIT",
+        "attribution": "Aqua Dash Project"
+      },
+      "verification": {
+        "native_scale_reviewed": true,
+        "in_engine_reviewed": true,
+        "technical_checks_passed": true,
+        "approved_by": "lead-artist"
+      }
+    },
+    {
+      "id": "player-dash",
+      "role": "Cá người chơi phình gai bọc giáp gai nhọn khi lướt tốc độ cao",
+      "path": "public/assets/player-dash.svg",
+      "status": "approved",
+      "technical": {
+        "dimensions": "64x64",
+        "format": "svg",
+        "alpha": true,
+        "anchor": "center",
+        "filtering": "smooth"
+      },
+      "visual_locks": [
+        "puffer-spikes-ring",
+        "magenta-gold-combat-aura",
+        "spherical-body-silhouette"
+      ],
+      "source": {
+        "kind": "authored-vector",
+        "creator": "Aqua Dash Team",
+        "license": "MIT",
+        "attribution": "Aqua Dash Project"
+      },
+      "verification": {
+        "native_scale_reviewed": true,
+        "in_engine_reviewed": true,
+        "technical_checks_passed": true,
+        "approved_by": "lead-artist"
+      }
+    },
+    {
+      "id": "boid-escort",
+      "role": "Chú cá con hộ mệnh trong đàn bầy Boids AI",
+      "path": "public/assets/boid-escort.svg",
+      "status": "approved",
+      "technical": {
+        "dimensions": "48x32",
+        "format": "svg",
+        "alpha": true,
+        "anchor": "center",
+        "filtering": "smooth"
+      },
+      "visual_locks": [
+        "cyan-streamlined-body",
+        "glowing-tail-fin",
+        "bright-pupil"
+      ],
+      "source": {
+        "kind": "authored-vector",
+        "creator": "Aqua Dash Team",
+        "license": "MIT",
+        "attribution": "Aqua Dash Project"
+      },
+      "verification": {
+        "native_scale_reviewed": true,
+        "in_engine_reviewed": true,
+        "technical_checks_passed": true,
+        "approved_by": "lead-artist"
+      }
+    },
+    {
+      "id": "pillar-solid",
+      "role": "Chóp gai san hô đá bazan biển sâu kiên cố không thể phá vỡ",
+      "path": "public/assets/coral-pillar-solid.svg",
+      "status": "approved",
+      "technical": {
+        "dimensions": "64x64",
+        "format": "svg",
+        "alpha": true,
+        "anchor": "bottom-center",
+        "filtering": "smooth"
+      },
+      "visual_locks": [
+        "deep-slate-base",
+        "electric-purple-crystals",
+        "sharp-hazard-edges"
+      ],
+      "source": {
+        "kind": "authored-vector",
+        "creator": "Aqua Dash Team",
+        "license": "MIT",
+        "attribution": "Aqua Dash Project"
+      },
+      "verification": {
+        "native_scale_reviewed": true,
+        "in_engine_reviewed": true,
+        "technical_checks_passed": true,
+        "approved_by": "lead-artist"
+      }
+    },
+    {
+      "id": "pillar-fractured",
+      "role": "Chóp gai san hô rạn nứt có thể phá hủy khi cá nóc phình gai húc trúng",
+      "path": "public/assets/coral-pillar-fractured.svg",
+      "status": "approved",
+      "technical": {
+        "dimensions": "64x64",
+        "format": "svg",
+        "alpha": true,
+        "anchor": "bottom-center",
+        "filtering": "smooth"
+      },
+      "visual_locks": [
+        "magenta-deep-body",
+        "yellow-fissure-cracks",
+        "warning-break-glow"
+      ],
+      "source": {
+        "kind": "authored-vector",
+        "creator": "Aqua Dash Team",
+        "license": "MIT",
+        "attribution": "Aqua Dash Project"
+      },
+      "verification": {
+        "native_scale_reviewed": true,
+        "in_engine_reviewed": true,
+        "technical_checks_passed": true,
+        "approved_by": "lead-artist"
+      }
+    }
+  ]
+}
+

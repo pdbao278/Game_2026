@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <!-- Bộ lọc ánh sáng phát quang neon hồng tím (Bioluminescent Starfish Glow) -->
+    <filter id="starfish-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <radialGradient id="star-body-grad" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="25%" stop-color="#ff70a6" />
+      <stop offset="65%" stop-color="#ff0054" />
+      <stop offset="100%" stop-color="#7209b7" />
+    </radialGradient>
+
+    <radialGradient id="core-glow" cx="50%" cy="50%" r="40%">
+      <stop offset="0%" stop-color="#fee440" stop-opacity="1" />
+      <stop offset="60%" stop-color="#ff0054" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#7209b7" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Hào quang phát sáng mềm -->
+  <circle cx="32" cy="32" r="28" fill="url(#core-glow)" filter="url(#starfish-glow)" opacity="0.85" />
+
+  <!-- Thân chính 5 cánh sao uốn lượn mềm mại sinh học -->
+  <path d="M 32 4 
+           C 34 16, 37 22, 48 19
+           C 58 16, 56 26, 49 32
+           C 42 38, 44 44, 52 53
+           C 59 60, 50 64, 42 58
+           C 35 52, 29 52, 22 58
+           C 14 64, 5 60, 12 53
+           C 20 44, 22 38, 15 32
+           C 8 26, 6 16, 16 19
+           C 27 22, 30 16, 32 4 Z" 
+        fill="url(#star-body-grad)" 
+        stroke="#ffffff" 
+        stroke-width="1"
+        stroke-opacity="0.7"
+        filter="url(#starfish-glow)" />
+
+  <!-- Đốm giác hút phát quang dọc 5 cánh -->
+  <!-- Cánh trên -->
+  <circle cx="32" cy="14" r="2.2" fill="#fee440" opacity="0.9" />
+  <circle cx="32" cy="22" r="1.8" fill="#ffffff" opacity="0.95" />
+  <!-- Cánh trên-phải -->
+  <circle cx="45" cy="25" r="2.2" fill="#fee440" opacity="0.9" />
+  <circle cx="39" cy="28" r="1.8" fill="#ffffff" opacity="0.95" />
+  <!-- Cánh dưới-phải -->
+  <circle cx="43" cy="48" r="2.2" fill="#fee440" opacity="0.9" />
+  <circle cx="38" cy="40" r="1.8" fill="#ffffff" opacity="0.95" />
+  <!-- Cánh dưới-trái -->
+  <circle cx="21" cy="48" r="2.2" fill="#fee440" opacity="0.9" />
+  <circle cx="26" cy="40" r="1.8" fill="#ffffff" opacity="0.95" />
+  <!-- Cánh trên-trái -->
+  <circle cx="19" cy="25" r="2.2" fill="#fee440" opacity="0.9" />
+  <circle cx="25" cy="28" r="1.8" fill="#ffffff" opacity="0.95" />
+
+  <!-- Lõi trung tâm sao biển lấp lánh viên ngọc vàng -->
+  <circle cx="32" cy="32" r="4.5" fill="#fee440" stroke="#ffffff" stroke-width="1.2" />
+  <circle cx="30.8" cy="30.8" r="1.5" fill="#ffffff" opacity="0.9" />
+</svg>
+
