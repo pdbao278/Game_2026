@@ -5,7 +5,9 @@ import { globalEventBus } from '../core/EventBus.js';
  * Giữ nguyên 100% phong cách Neo-Arcade Cosmic từ preview_ui.html
  */
 export class UIManager {
-  constructor() {
+  constructor(audioManager) {
+    this.audioManager = audioManager;
+    this.toastTimer = null;
     this.initElements();
     this.bindEvents();
   }
@@ -28,15 +30,27 @@ export class UIManager {
     this.scoreNum = document.getElementById('hud-score-num');
     this.phaseIndicator = document.getElementById('hud-phase-indicator');
     this.phaseName = document.getElementById('hud-phase-name');
-    this.hearts = document.querySelectorAll('.heart-svg');
+    this.hearts = [
+      document.getElementById('heart1'),
+      document.getElementById('heart2'),
+      document.getElementById('heart3')
+    ];
 
     // Hyper-Drive bar
     this.hyperFill = document.getElementById('hud-hyper-fill');
     this.hyperStatus = document.getElementById('hud-hyper-status');
 
-    // Near-Miss Toast
+    // Near-Miss Toast & Thông báo nổi Toast
     this.nearMissToast = document.getElementById('near-miss-popup');
     this.nearMissTimer = null;
+    this.toastEl = document.getElementById('toast');
+
+    // Thanh điều hướng dưới đáy
+    this.btnToggleLane = document.getElementById('btnToggleLane');
+    this.laneLabel = document.getElementById('laneLabel');
+    this.btnToggleShip = document.getElementById('btnToggleShip');
+    this.btnBgm = document.getElementById('btnBgm');
+    this.bgmLabel = document.getElementById('bgmLabel');
   }
 
   bindEvents() {
@@ -47,6 +61,7 @@ export class UIManager {
 
     globalEventBus.on('player-damage', (data) => {
       this.updateHearts(data.health);
+      this.triggerScreenShake();
     });
 
     globalEventBus.on('player-heal', (data) => {
@@ -65,6 +80,10 @@ export class UIManager {
       this.showNearMissToast(data.pts || 250);
     });
 
+    globalEventBus.on('toast', (data) => {
+      this.showToast(data.text, data.type || 'gold');
+    });
+
     globalEventBus.on('game-over', (data) => {
       this.showGameOver(data);
     });
@@ -72,12 +91,17 @@ export class UIManager {
     // 2. Tương tác nút trên giao diện
     if (this.btnPlay) {
       this.btnPlay.addEventListener('click', () => {
+        if (this.audioManager) {
+          this.audioManager.playSFX('sfxClick');
+          this.audioManager.startBGM();
+        }
         globalEventBus.emit('start-game');
       });
     }
 
     if (this.btnRestart) {
       this.btnRestart.addEventListener('click', () => {
+        if (this.audioManager) this.audioManager.playSFX('sfxClick');
         globalEventBus.emit('restart-game');
       });
     }
@@ -86,6 +110,34 @@ export class UIManager {
     if (this.phaseIndicator) {
       this.phaseIndicator.addEventListener('click', () => {
         globalEventBus.emit('request-phase-switch');
+      });
+    }
+
+    // Đổi 5 Làn / 3 Làn
+    if (this.btnToggleLane) {
+      this.btnToggleLane.addEventListener('click', () => {
+        globalEventBus.emit('request-lane-toggle');
+      });
+    }
+
+    // Đổi Phi thuyền Chibi / Racer
+    if (this.btnToggleShip) {
+      this.btnToggleShip.addEventListener('click', () => {
+        globalEventBus.emit('request-ship-toggle');
+      });
+    }
+
+    // Bật / Tắt BGM
+    if (this.btnBgm && this.audioManager) {
+      this.btnBgm.addEventListener('click', () => {
+        const isPlaying = this.audioManager.toggleBGM();
+        if (isPlaying) {
+          this.btnBgm.classList.add('playing');
+          if (this.bgmLabel) this.bgmLabel.textContent = 'Dừng Nhạc';
+        } else {
+          this.btnBgm.classList.remove('playing');
+          if (this.bgmLabel) this.bgmLabel.textContent = 'Nhạc Nền';
+        }
       });
     }
   }
@@ -119,10 +171,12 @@ export class UIManager {
   updateHearts(health) {
     if (!this.hearts) return;
     this.hearts.forEach((heart, idx) => {
-      if (idx < health) {
-        heart.classList.remove('lost');
-      } else {
-        heart.classList.add('lost');
+      if (heart) {
+        if (idx < health) {
+          heart.classList.remove('lost');
+        } else {
+          heart.classList.add('lost');
+        }
       }
     });
   }
@@ -148,7 +202,7 @@ export class UIManager {
 
     if (clamped >= 100 || isActive) {
       this.hyperFill.classList.add('full');
-      if (this.hyperStatus) this.hyperStatus.textContent = 'HYPER-DRIVE SẴN SÀNG!';
+      if (this.hyperStatus) this.hyperStatus.textContent = 'SẴN SÀNG!';
     } else {
       this.hyperFill.classList.remove('full');
       if (this.hyperStatus) this.hyperStatus.textContent = `${Math.round(clamped)}%`;
@@ -164,15 +218,43 @@ export class UIManager {
 
     this.nearMissToast.style.display = 'flex';
     this.nearMissToast.style.opacity = '1';
-    this.nearMissToast.style.transform = 'translateY(0) scale(1.05)';
+    this.nearMissToast.style.transform = 'translate(-50%, -50%) scale(1.05)';
 
     this.nearMissTimer = setTimeout(() => {
       this.nearMissToast.style.opacity = '0';
-      this.nearMissToast.style.transform = 'translateY(-12px) scale(0.95)';
+      this.nearMissToast.style.transform = 'translate(-50%, -50%) scale(0.95)';
       setTimeout(() => {
         this.nearMissToast.style.display = 'none';
       }, 300);
-    }, 1500);
+    }, 1200);
+  }
+
+  /**
+   * Hiển thị thông báo nổi Toast
+   * @param {string} text Nội dung
+   * @param {'gold'|'pink'|'cyan'|'orange'} type Loại màu
+   */
+  showToast(text, type = 'gold') {
+    if (!this.toastEl) return;
+    clearTimeout(this.toastTimer);
+    this.toastEl.textContent = text;
+    this.toastEl.className = `toast ${type} show`;
+    this.toastTimer = setTimeout(() => {
+      this.toastEl.classList.remove('show');
+    }, 900);
+  }
+
+  /**
+   * Rung màn hình khi bị va chạm
+   */
+  triggerScreenShake() {
+    const viewport = document.getElementById('viewport');
+    if (viewport) {
+      viewport.style.transform = 'translateX(4px) translateY(-3px)';
+      setTimeout(() => { viewport.style.transform = 'translateX(-4px) translateY(3px)'; }, 50);
+      setTimeout(() => { viewport.style.transform = 'translateX(2px) translateY(-2px)'; }, 100);
+      setTimeout(() => { viewport.style.transform = 'none'; }, 150);
+    }
   }
 
   /**
@@ -207,4 +289,3 @@ export class UIManager {
     }
   }
 }
-

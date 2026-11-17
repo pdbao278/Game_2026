@@ -1,40 +1,82 @@
-import * as THREE from 'three';
 import { globalEventBus } from './core/EventBus.js';
 import { GameState } from './core/GameState.js';
 import { InputManager } from './core/InputManager.js';
-import { SceneManager } from './game/SceneManager.js';
-import { Environment } from './game/Environment.js';
 import { LaneSystem } from './game/LaneSystem.js';
 import { PlayerShip } from './game/PlayerShip.js';
+import { ObstacleManager } from './game/ObstacleManager.js';
 import { UIManager } from './ui/UIManager.js';
+import { AudioManager } from './audio/AudioManager.js';
 
 /**
- * VoidShiftGame - Lớp điều phối vòng lặp game chính (Game Orchestrator)
+ * VoidShiftGame - Bộ điều phối toàn diện cho tựa game Void Shift 3D
  */
 class VoidShiftGame {
   constructor() {
-    this.canvasContainer = document.getElementById('canvas-container');
-    
-    // 1. Khởi tạo State & EventBus
+    // 1. Hệ thống âm thanh
+    this.audioManager = new AudioManager();
+
+    // 2. Quản lý trạng thái & điểm số
     this.gameState = new GameState();
 
-    // 2. Khởi tạo 3D Three.js
-    this.sceneManager = new SceneManager(this.canvasContainer);
-    this.environment = new Environment(this.sceneManager.scene);
+    // 3. Hệ thống làn đường (Mặc định 5 làn)
     this.laneSystem = new LaneSystem(5);
-    this.playerShip = new PlayerShip(this.sceneManager.scene, this.laneSystem);
 
-    // 3. Khởi tạo Điều khiển & Giao diện
+    // 4. Phi thuyền người chơi
+    this.playerShip = new PlayerShip(this.laneSystem, this.audioManager);
+
+    // 5. Quản lý chướng ngại vật & tinh thể
+    this.obstacleManager = new ObstacleManager(
+      document.getElementById('obstacleContainer'),
+      this.audioManager
+    );
+
+    // 6. Giao diện HUD & Bộ nhận tín hiệu điều khiển
+    this.uiManager = new UIManager(this.audioManager);
     this.inputManager = new InputManager(this.playerShip);
-    this.uiManager = new UIManager();
 
-    // 4. Lắng nghe các sự kiện hệ thống
+    // 7. Tạo hệ thống hạt sao Starfield tinh tế (Không bị vỡ khối vuông)
+    this.initStarField();
+
+    // 8. Đăng ký các sự kiện trò chơi
     this.setupListeners();
 
-    // 5. Chu kỳ vòng lặp animation
+    // 9. Vòng lặp hoạt ảnh 60 FPS
     this.lastTime = performance.now();
     this.animate = this.animate.bind(this);
     requestAnimationFrame(this.animate);
+  }
+
+  /**
+   * Tạo các hạt sao lướt mềm mại với texture PNG trong suốt
+   */
+  initStarField() {
+    const field = document.getElementById('starField');
+    if (!field) return;
+
+    const starTextures = [
+      'assets/textures/particles/PNG (Transparent)/star_01.png',
+      'assets/textures/particles/PNG (Transparent)/star_04.png',
+      'assets/textures/particles/PNG (Transparent)/circle_05.png',
+      'assets/textures/particles/PNG (Transparent)/spark_02.png'
+    ];
+
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement('div');
+      p.className = 'sf-particle';
+      const tex = starTextures[Math.floor(Math.random() * starTextures.length)];
+      const size = 10 + Math.random() * 16;
+      p.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 35}%;
+        width: ${size}px;
+        height: ${size}px;
+        background-image: url('${tex}');
+        animation-duration: ${2.5 + Math.random() * 3.5}s;
+        animation-delay: ${Math.random() * 3}s;
+        opacity: ${0.25 + Math.random() * 0.55};
+      `;
+      field.appendChild(p);
+    }
   }
 
   setupListeners() {
@@ -43,6 +85,7 @@ class VoidShiftGame {
       this.uiManager.hideStartScreen();
       this.gameState.start();
       this.playerShip.reset();
+      this.obstacleManager.clearAll();
     });
 
     // Chơi lại khi bấm nút "CHƠI LẠI"
@@ -50,6 +93,7 @@ class VoidShiftGame {
       this.uiManager.hideGameOver();
       this.gameState.start();
       this.playerShip.reset();
+      this.obstacleManager.clearAll();
     });
 
     // Đổi pha từ click trên HUD
@@ -57,11 +101,44 @@ class VoidShiftGame {
       this.playerShip.switchPhase();
     });
 
+    // Đổi 5 Làn / 3 Làn
+    globalEventBus.on('request-lane-toggle', () => {
+      const currentCount = this.laneSystem.laneCount;
+      const newCount = currentCount === 5 ? 3 : 5;
+      this.laneSystem.setMode(newCount);
+      this.playerShip.reset();
+
+      if (newCount === 3) {
+        this.obstacleManager.setLanePositions([37, 50, 63]);
+        if (this.uiManager.laneLabel) this.uiManager.laneLabel.textContent = '3 Làn (Phím L)';
+        this.uiManager.showToast('🛣️ CHẾ ĐỘ 3 LÀN (CƠ BẢN)', 'cyan');
+      } else {
+        this.obstacleManager.setLanePositions([24, 37, 50, 63, 76]);
+        if (this.uiManager.laneLabel) this.uiManager.laneLabel.textContent = '5 Làn (Phím L)';
+        this.uiManager.showToast('🛣️ CHẾ ĐỘ 5 LÀN (RỘNG RÃI)', 'gold');
+      }
+      if (this.audioManager) this.audioManager.playSFX('sfxClick');
+    });
+
+    // Đổi mẫu phi thuyền Chibi / Racer
+    globalEventBus.on('request-ship-toggle', () => {
+      this.playerShip.toggleModel();
+    });
+
     // Khi người chơi mất máu
     globalEventBus.on('player-damage', (data) => {
-      this.sceneManager.triggerShake(0.45);
       if (data.health <= 0) {
         this.gameState.triggerGameOver();
+      }
+    });
+
+    // Lắng nghe phím tắt bổ sung (M, L)
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'KeyM') {
+        this.playerShip.toggleModel();
+      }
+      if (e.code === 'KeyL') {
+        globalEventBus.emit('request-lane-toggle');
       }
     });
   }
@@ -81,15 +158,10 @@ class VoidShiftGame {
     // 2. Cập nhật PlayerShip
     this.playerShip.update(deltaTime);
 
-    // 3. Cập nhật sao lướt và đường bay
-    const currentSpeed = this.gameState.status === 'PLAYING' ? this.gameState.worldSpeed : 12.0;
-    this.environment.update(deltaTime, currentSpeed);
-
-    // 4. Cập nhật Camera bám theo tàu và rung
-    this.sceneManager.update(deltaTime, this.playerShip.mesh.position.x);
-
-    // 5. Render Three.js Scene
-    this.sceneManager.render();
+    // 3. Cập nhật sinh và di chuyển chướng ngại vật khi đang chơi
+    if (this.gameState.status === 'PLAYING') {
+      this.obstacleManager.update(deltaTime, this.gameState.worldSpeed, this.playerShip, this.gameState);
+    }
   }
 }
 
@@ -97,4 +169,3 @@ class VoidShiftGame {
 window.addEventListener('DOMContentLoaded', () => {
   window.gameInstance = new VoidShiftGame();
 });
-

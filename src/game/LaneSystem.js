@@ -16,11 +16,13 @@ export class LaneSystem {
     if (count === 3) {
       this.laneCount = 3;
       this.lanePositions = [-2.5, 0, 2.5];
+      this.lanePositionsPercent = ['37%', '50%', '63%'];
       this.currentLaneIndex = 1; // Làn giữa (index 1)
     } else {
       // 5 làn mặc định
       this.laneCount = 5;
       this.lanePositions = [-4.0, -2.0, 0, 2.0, 4.0];
+      this.lanePositionsPercent = ['24%', '37%', '50%', '63%', '76%'];
       this.currentLaneIndex = 2; // Làn giữa (index 2)
     }
   }
@@ -31,6 +33,14 @@ export class LaneSystem {
    */
   getTargetX() {
     return this.lanePositions[this.currentLaneIndex];
+  }
+
+  /**
+   * Lấy vị trí phần trăm của làn trên màn hình phối cảnh
+   * @returns {string} Ví dụ: '50%'
+   */
+  getPercentX() {
+    return this.lanePositionsPercent[this.currentLaneIndex];
   }
 
   /**
@@ -71,7 +81,6 @@ export class LaneSystem {
 
   /**
    * Tính toán nội suy vị trí X theo Delta Time
-   * Công thức: currentX = lerp(currentX, targetX, lerpSpeed * dt)
    * @param {number} currentX Vị trí hiện tại
    * @param {number} deltaTime Thời gian giữa 2 khung hình (giây)
    * @returns {number} Vị trí mới sau nội suy
@@ -82,4 +91,3 @@ export class LaneSystem {
     return currentX + (targetX - currentX) * factor;
   }
 }
-
