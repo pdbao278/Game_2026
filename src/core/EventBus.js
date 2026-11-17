@@ -65,3 +65,4 @@ export class EventBus {
 
 // Singleton tiện lợi dùng chung toàn bộ ứng dụng
 export const globalEventBus = new EventBus();
+

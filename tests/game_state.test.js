@@ -77,3 +77,4 @@ describe('GameState', () => {
     assert.equal(state.highScore, 500);
   });
 });
+

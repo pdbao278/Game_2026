@@ -97,3 +97,4 @@ class VoidShiftGame {
 window.addEventListener('DOMContentLoaded', () => {
   window.gameInstance = new VoidShiftGame();
 });
+

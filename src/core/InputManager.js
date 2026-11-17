@@ -23,17 +23,21 @@ export class InputManager {
   }
 
   attachListeners() {
-    window.addEventListener('keydown', this.onKeyDown);
-    window.addEventListener('touchstart', this.onTouchStart, { passive: false });
-    window.addEventListener('touchend', this.onTouchEnd, { passive: false });
-    window.addEventListener('mousedown', this.onMouseDown);
+    if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+      window.addEventListener('keydown', this.onKeyDown);
+      window.addEventListener('touchstart', this.onTouchStart, { passive: false });
+      window.addEventListener('touchend', this.onTouchEnd, { passive: false });
+      window.addEventListener('mousedown', this.onMouseDown);
+    }
   }
 
   detachListeners() {
-    window.removeEventListener('keydown', this.onKeyDown);
-    window.removeEventListener('touchstart', this.onTouchStart);
-    window.removeEventListener('touchend', this.onTouchEnd);
-    window.removeEventListener('mousedown', this.onMouseDown);
+    if (typeof window !== 'undefined' && typeof window.removeEventListener === 'function') {
+      window.removeEventListener('keydown', this.onKeyDown);
+      window.removeEventListener('touchstart', this.onTouchStart);
+      window.removeEventListener('touchend', this.onTouchEnd);
+      window.removeEventListener('mousedown', this.onMouseDown);
+    }
   }
 
   setEnabled(enabled) {
@@ -84,7 +88,7 @@ export class InputManager {
       return;
     }
 
-    const screenWidth = window.innerWidth;
+    const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1000;
     const clickX = e.clientX;
 
     // Nửa trái màn hình: Sang trái
@@ -140,7 +144,7 @@ export class InputManager {
     }
 
     // 2. Nếu là chạm nhẹ (Tap)
-    const screenWidth = window.innerWidth;
+    const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1000;
     if (touchEndX < screenWidth * 0.4) {
       this.playerShip.moveLeft();
     } else if (touchEndX > screenWidth * 0.6) {
@@ -154,3 +158,4 @@ export class InputManager {
     this.detachListeners();
   }
 }
+

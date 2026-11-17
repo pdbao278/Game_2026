@@ -98,3 +98,4 @@ describe('LaneSystem', () => {
     assert.equal(laneSystem.getTargetX(), 0);
   });
 });
+

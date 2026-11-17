@@ -82,3 +82,4 @@ export class LaneSystem {
     return currentX + (targetX - currentX) * factor;
   }
 }
+

@@ -83,3 +83,4 @@ describe('PlayerShipState', () => {
     assert.equal(ship.isInvincible, false);
   });
 });
+
