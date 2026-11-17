@@ -11,7 +11,7 @@ export class ObstacleManager {
     this.obstacles = [];
     this.spawnTimer = 0;
     this.spawnInterval = 1.35; // Khoảng cách sinh vật thể (giây)
-    this.lanePositions = [24, 37, 50, 63, 76];
+    this.lanePositions = [32, 50, 68];
     this.nextId = 0;
   }
 
@@ -22,7 +22,7 @@ export class ObstacleManager {
   /**
    * Sinh ngẫu nhiên một vật thể mới ở đầu đường bay (chân trời)
    */
-  spawn(laneCount = 5) {
+  spawn(laneCount = 3) {
     const lane = Math.floor(Math.random() * laneCount);
     const rand = Math.random();
 

@@ -20,10 +20,10 @@ export class VoidShiftGame {
     // 2. Quản lý trạng thái & điểm số
     this.gameState = new GameState();
 
-    // 3. Hệ thống làn đường (Mặc định 5 làn)
-    this.laneSystem = new LaneSystem(5);
+    // 3. Hệ thống làn đường (Mặc định 3 làn ở giữa gọn gàng)
+    this.laneSystem = new LaneSystem(3);
 
-    // 4. Khởi tạo Three.js 3D (Skybox MilkyWay, Hạt sao điểm kim, Làn đường 3D phát sáng)
+    // 4. Khởi tạo Three.js 3D (Skybox MilkyWay, Hạt sao điểm kim)
     const canvasContainer = document.getElementById('canvas-container');
     if (canvasContainer) {
       canvasContainer.style.display = 'block';
@@ -34,14 +34,18 @@ export class VoidShiftGame {
     // 5. Phi thuyền người chơi
     this.playerShip = new PlayerShip(this.laneSystem, this.audioManager);
 
-    // 6. Quản lý chướng ngại vật & tinh thể
+    // 6. Quản lý chướng ngại vật & tinh thể (3 làn: 32%, 50%, 68%)
     this.obstacleManager = new ObstacleManager(
       document.getElementById('obstacleContainer'),
       this.audioManager
     );
+    this.obstacleManager.setLanePositions([32, 50, 68]);
 
     // 7. Giao diện HUD & Bộ nhận tín hiệu điều khiển
     this.uiManager = new UIManager(this.audioManager);
+    if (this.uiManager.laneLabel) {
+      this.uiManager.laneLabel.textContent = '3 Làn (Phím L)';
+    }
     this.inputManager = new InputManager(this.playerShip);
 
     // 8. Đăng ký các sự kiện trò chơi
