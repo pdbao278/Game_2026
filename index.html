@@ -1202,7 +1202,7 @@
     </div>
 
     <!-- Three.js Canvas Container nếu muốn bổ sung hiệu ứng 3D -->
-    <div id="canvas-container" style="display:none;"></div>
+    <div id="canvas-container" style="position:fixed; inset:0; z-index:1; pointer-events:none;"></div>
 
   </div><!-- /viewport -->
 
@@ -1298,7 +1298,7 @@
       </div>
     </div>
 
-    <button class="btn-play interactive-ui" id="btn-play">
+    <button class="btn-play interactive-ui" id="btn-play" onclick="window.gameInstance ? window.gameInstance.startGame() : (document.getElementById('screen-start').classList.add('hidden'))">
       <svg viewBox="0 0 24 24" width="24" height="24">
         <path fill="currentColor" d="M8 5v14l11-7z"/>
       </svg>
