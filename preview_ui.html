@@ -1,0 +1,2707 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOID SHIFT 3D — Preview Giao Diện Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@700&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════════
+       DESIGN SYSTEM — VOID SHIFT 3D 
+       Phong cách: Neo-Arcade Cosmic / Vivid High-Contrast Sci-Fi
+       ═══════════════════════════════════════════════════ */
+    :root {
+      /* Bảng màu nền & Surface (Độ tương phản cao, chiều sâu sắc nét) */
+      --space-deep: #080613;
+      --space-mid: #140f2b;
+      --space-card: rgba(26, 20, 56, 0.96);
+      --space-card-hover: rgba(38, 30, 78, 0.98);
+      --space-glass: rgba(28, 22, 60, 0.92);
+
+      /* Đường viền phân cách sáng rõ, không chìm */
+      --border-dim: rgba(255, 255, 255, 0.22);
+      --border-bright: rgba(255, 255, 255, 0.45);
+      --border-highlight: rgba(255, 255, 255, 0.7);
+
+      /* Màu năng lượng rực rỡ, bão hòa cao, trực quan tuyệt đối */
+      --cyan: #00F5FF;
+      --cyan-bright: #6BFFFF;
+      --cyan-glow: rgba(0, 245, 255, 0.65);
+
+      --orange: #FF7700;
+      --orange-bright: #FFA447;
+      --orange-glow: rgba(255, 119, 0, 0.65);
+
+      --gold: #FFD23F;
+      --gold-bright: #FFE680;
+      --gold-glow: rgba(255, 210, 63, 0.6);
+
+      --green: #00F5A0;
+      --green-glow: rgba(0, 245, 160, 0.55);
+
+      --pink: #FF3366;
+      --pink-glow: rgba(255, 51, 102, 0.55);
+
+      --purple: #B24BF3;
+      --purple-glow: rgba(178, 75, 243, 0.55);
+
+      /* Typography: Chữ chính trắng sáng 100%, chữ phụ màu tím sáng dễ đọc */
+      --text: #FFFFFF;
+      --text-dim: #DCD4F5;
+      --text-muted: #B8AED8;
+
+      --font-display: 'Orbitron', sans-serif;
+      --font-body: 'Chakra Petch', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --r-sm: 10px;
+      --r-md: 18px;
+      --r-lg: 26px;
+      --r-xl: 34px;
+      --r-pill: 999px;
+
+      --spring: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--space-deep);
+      font-family: var(--font-body);
+      color: var(--text);
+      user-select: none;
+      cursor: default;
+    }
+
+    /* ═══════ FULLSCREEN VIEWPORT (NỀN VŨ TRỤ MILKYWAY THẬT) ═══════ */
+    .viewport {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      /* Nền vũ trụ dải Ngân Hà MilkyWay chân thực từ assets */
+      background:
+        radial-gradient(circle at 50% 25%, rgba(0, 245, 255, 0.15) 0%, transparent 45%),
+        linear-gradient(to bottom, rgba(8, 6, 18, 0.45) 0%, rgba(8, 6, 18, 0.75) 100%),
+        url('assets/textures/skybox/milkyway/dark-s_pz.jpg') center/cover no-repeat;
+    }
+
+    /* ─── HUD TELEMETRY RÌA MÀN HÌNH (GÓC CHƠI THỰC TẾ) ─── */
+    .telemetry-left {
+      position: absolute;
+      top: 50%;
+      left: 32px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 15;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.45);
+      pointer-events: none;
+      letter-spacing: 1px;
+    }
+
+    .telemetry-node {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .telemetry-line {
+      width: 24px;
+      height: 1.5px;
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .telemetry-node.active-pitch {
+      color: var(--cyan);
+      text-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .telemetry-node.active-pitch .telemetry-line {
+      width: 48px;
+      height: 2.5px;
+      background: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+
+    .telemetry-right {
+      position: absolute;
+      top: 50%;
+      right: 32px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 18px;
+      z-index: 15;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.45);
+      pointer-events: none;
+      letter-spacing: 1.5px;
+    }
+
+    .telemetry-right-node {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .telemetry-right-line {
+      width: 28px;
+      height: 1.5px;
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .telemetry-right-node.active-prox {
+      color: var(--orange-bright);
+      text-shadow: 0 0 10px var(--orange-glow);
+    }
+
+    .telemetry-right-node.active-prox .telemetry-right-line {
+      width: 52px;
+      height: 2.5px;
+      background: var(--orange);
+      box-shadow: 0 0 12px var(--orange-glow);
+    }
+
+    /* ─── ĐƯỜNG BAY PHỐI CẢNH 3D HỘI TỤ (VANISHING POINT RUNWAY) ─── */
+    .tunnel-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Tâm điểm chân trời (Horizon Vanishing Point) */
+    .horizon-point {
+      position: absolute;
+      top: 25%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Vòng tròn cổng năng lượng ở chân trời */
+    .horizon-ring {
+      width: 100px;
+      height: 24px;
+      border: 1.5px solid var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 20px var(--cyan-glow), inset 0 0 12px var(--cyan-glow);
+      animation: pulseHorizonRing 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseHorizonRing {
+      0% {
+        transform: scale(0.92);
+        opacity: 0.65;
+        box-shadow: 0 0 15px var(--cyan-glow);
+      }
+
+      100% {
+        transform: scale(1.08);
+        opacity: 0.95;
+        box-shadow: 0 0 30px var(--cyan-glow);
+      }
+    }
+
+    /* Tâm ngắm Crosshair Reticle */
+    .horizon-crosshair {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border: 1px dashed rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+    }
+
+    .horizon-crosshair::before,
+    .horizon-crosshair::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .horizon-crosshair::before {
+      top: 50%;
+      left: -6px;
+      right: -6px;
+      height: 1px;
+    }
+
+    .horizon-crosshair::after {
+      left: 50%;
+      top: -6px;
+      bottom: -6px;
+      width: 1px;
+    }
+
+    /* SVG Lưới tia phối cảnh đường bay (Perspective Ray Grid) */
+    .perspective-grid-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Các vạch ngang chuyển động theo chiều dọc tạo cảm giác tốc độ */
+    .lane-bars-group {
+      animation: speedBarsScroll 1.2s linear infinite;
+    }
+
+    @keyframes speedBarsScroll {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(120px);
+      }
+    }
+
+    /* ─── VẬT THỂ HUD TARGET TRÊN LÀN ĐƯỜNG (NHƯ HÌNH THỰC TẾ) ─── */
+    .track-targets-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .hud-target {
+      position: absolute;
+      pointer-events: auto;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: var(--spring);
+    }
+
+    .hud-target:hover {
+      transform: scale(1.12);
+    }
+
+    /* Khung ngắm hộp kính HUD */
+    .target-box {
+      width: 60px;
+      height: 60px;
+      background: rgba(18, 14, 34, 0.75);
+      border: 1.5px solid var(--border-bright);
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    }
+
+    .target-box img {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+    }
+
+    /* Tinh thể Pha 2 Cam (Làn trái phía xa) */
+    .target-pha-cam {
+      top: 28%;
+      left: 36%;
+    }
+
+    .target-pha-cam .target-box {
+      border-color: rgba(255, 119, 0, 0.55);
+      box-shadow: 0 0 20px rgba(255, 119, 0, 0.35);
+    }
+
+    .target-pha-cam .target-box img {
+      filter: drop-shadow(0 0 10px var(--orange-glow));
+    }
+
+    .target-label-cam {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--orange-bright);
+      letter-spacing: 1.5px;
+      margin-top: 6px;
+      text-shadow: 0 0 8px var(--orange-glow);
+      border-bottom: 2px solid var(--orange);
+      padding-bottom: 2px;
+      white-space: nowrap;
+    }
+
+    /* Tinh thể Pha 1 Cyan (Làn giữa thẳng trước mũi tàu) */
+    .target-pha-cyan {
+      top: 44%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .target-pha-cyan:hover {
+      transform: translateX(-50%) scale(1.12);
+    }
+
+    .target-pha-cyan .target-box {
+      width: 72px;
+      height: 72px;
+      border-color: var(--cyan);
+      box-shadow: 0 0 28px var(--cyan-glow), inset 0 0 16px rgba(0, 245, 255, 0.3);
+    }
+
+    .target-pha-cyan .target-box img {
+      filter: drop-shadow(0 0 14px var(--cyan-glow));
+    }
+
+    .target-label-cyan {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--cyan-bright);
+      letter-spacing: 1.5px;
+      margin-top: 8px;
+      text-shadow: 0 0 10px var(--cyan-glow);
+      border-bottom: 2px solid var(--cyan);
+      padding-bottom: 2px;
+      white-space: nowrap;
+    }
+
+    /* Lõi hồi máu Repair Core (Làn bên phải) */
+    .target-repair-core {
+      top: 48%;
+      left: 59%;
+    }
+
+    .target-repair-core .target-box {
+      width: 54px;
+      height: 54px;
+      border-color: rgba(0, 245, 160, 0.6);
+      box-shadow: 0 0 20px rgba(0, 245, 160, 0.35);
+      background: rgba(10, 26, 20, 0.75);
+    }
+
+    .target-repair-core .target-box svg {
+      width: 28px;
+      height: 28px;
+      fill: var(--green);
+      filter: drop-shadow(0 0 8px var(--green-glow));
+    }
+
+    .target-label-green {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: 1.5px;
+      margin-top: 6px;
+      text-shadow: 0 0 8px var(--green-glow);
+      border-bottom: 2px solid var(--green);
+      padding-bottom: 2px;
+      white-space: nowrap;
+    }
+
+    /* Chướng ngại vật đa diện AST-09 (Thiên thạch khối) */
+    .target-asteroid {
+      top: 36%;
+      left: 63%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ast-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.65);
+      letter-spacing: 1.5px;
+      transform: rotate(-35deg);
+    }
+
+    .ast-wireframe {
+      width: 58px;
+      height: 58px;
+      animation: rotatePoly 12s linear infinite;
+    }
+
+    /* LÀN 1 (Cực trái): Thiên thạch AST-01 */
+    .target-meteor-farleft {
+      top: 38%;
+      left: 21%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .target-meteor-farleft .target-box {
+      width: 64px;
+      height: 64px;
+      border-color: rgba(255, 51, 102, 0.5);
+      box-shadow: 0 0 20px rgba(255, 51, 102, 0.35);
+    }
+
+    .target-label-red {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--pink);
+      letter-spacing: 1.5px;
+      margin-top: 6px;
+      border-bottom: 2px solid var(--pink);
+      padding-bottom: 2px;
+      white-space: nowrap;
+    }
+
+    /* LÀN 5 (Cực phải): Sao Đôi Cộng Hưởng x2 Điểm */
+    .target-shard-farright {
+      top: 35%;
+      left: 77%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .target-shard-farright .target-box {
+      width: 64px;
+      height: 64px;
+      border-color: var(--gold);
+      box-shadow: 0 0 22px var(--gold-glow);
+    }
+
+    .target-label-gold {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--gold-bright);
+      letter-spacing: 1.5px;
+      margin-top: 6px;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 2px;
+      white-space: nowrap;
+    }
+
+    width: 58px;
+    height: 58px;
+    animation: rotatePoly 12s linear infinite;
+    }
+
+    @keyframes rotatePoly {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .ast-wireframe svg {
+      width: 100%;
+      height: 100%;
+      stroke: rgba(255, 255, 255, 0.6);
+      fill: rgba(255, 255, 255, 0.04);
+      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
+    }
+
+    /* Popup thông báo né sát NEAR-MISS EVASION */
+    .near-miss-popup {
+      position: absolute;
+      top: 61%;
+      left: 62%;
+      background: rgba(18, 15, 32, 0.92);
+      border: 1.5px solid var(--border-bright);
+      border-left: 3.5px solid var(--cyan);
+      border-radius: var(--r-sm);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 16px rgba(0, 245, 255, 0.2);
+      pointer-events: auto;
+      cursor: pointer;
+      animation: popNearMiss 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes popNearMiss {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-6px);
+      }
+    }
+
+    .near-miss-icon {
+      color: var(--cyan);
+      font-size: 1.2rem;
+      filter: drop-shadow(0 0 6px var(--cyan-glow));
+    }
+
+    .near-miss-pts {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 1px;
+    }
+
+    .near-miss-sub {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.55);
+      letter-spacing: 1.5px;
+    }
+
+    /* ─── PHI THUYỀN CHIBI & ASSET THỰC TẾ (CHASE CAM TỪ PHÍA SAU ĐUÔI) ─── */
+    .player-ship-container {
+      position: absolute;
+      bottom: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 140px;
+      z-index: 20;
+      pointer-events: auto;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: left 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.25s ease;
+    }
+
+    .player-ship-container:hover {
+      transform: translateX(-50%) translateY(-6px) scale(1.05);
+    }
+
+    /* Ảnh phi thuyền Chibi / Racer */
+    .player-ship-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      transition: filter 0.3s ease, transform 0.3s ease;
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.85));
+    }
+
+    /* Hiệu ứng hào quang viền phát sáng đổi theo pha */
+    .player-ship-container.phase-cyan .player-ship-img {
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 20px var(--cyan-glow)) drop-shadow(0 0 40px rgba(0, 245, 255, 0.4));
+    }
+
+    .player-ship-container.phase-orange .player-ship-img {
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 20px var(--orange-glow)) drop-shadow(0 0 40px rgba(255, 119, 0, 0.4));
+    }
+
+    /* Lửa phản lực đuôi thực tế từ assets: flame_01.png */
+    .ship-thruster-flame {
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 38px;
+      height: 55px;
+      background: url('assets/textures/particles/PNG (Transparent)/flame_01.png') center/contain no-repeat;
+      animation: thrusterPuff 0.12s infinite alternate;
+      pointer-events: none;
+      transition: filter 0.3s ease;
+      z-index: -1;
+    }
+
+    .player-ship-container.phase-cyan .ship-thruster-flame {
+      filter: drop-shadow(0 0 12px var(--cyan)) brightness(1.2);
+    }
+
+    .player-ship-container.phase-orange .ship-thruster-flame {
+      filter: drop-shadow(0 0 12px var(--orange)) hue-rotate(180deg) brightness(1.2);
+    }
+
+    @keyframes thrusterPuff {
+      0% {
+        transform: translateX(-50%) scaleY(0.9);
+        opacity: 0.85;
+      }
+
+      100% {
+        transform: translateX(-50%) scaleY(1.15);
+        opacity: 1;
+      }
+    }
+
+    /* Vệt sáng đuôi (Trace glow) từ assets: trace_01.png */
+    .ship-thruster-trace {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 60px;
+      background: url('assets/textures/particles/PNG (Transparent)/trace_01.png') center/contain no-repeat;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .player-ship-container.phase-cyan .ship-thruster-trace {
+      filter: drop-shadow(0 0 8px var(--cyan));
+    }
+
+    .player-ship-container.phase-orange .ship-thruster-trace {
+      filter: drop-shadow(0 0 8px var(--orange)) hue-rotate(180deg);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       OVERLAY SCREENS  (z-index: 100+)
+       ═══════════════════════════════════════════════════ */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* ═══════ 1. START SCREEN ═══════ */
+    .screen-start {
+      background: radial-gradient(ellipse 110% 85% at 50% 40%, rgba(30, 22, 65, 0.82) 0%, rgba(8, 6, 18, 0.96) 100%);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      gap: 36px;
+    }
+
+    /* Logo */
+    .logo-block {
+      text-align: center;
+      animation: logoFloat 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes logoFloat {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 210, 63, 0.12);
+      border: 1.5px solid var(--gold);
+      padding: 8px 24px;
+      border-radius: var(--r-pill);
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--gold-bright);
+      text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(255, 210, 63, 0.3);
+    }
+
+    .logo-badge img {
+      width: 18px;
+      height: 18px;
+      animation: spinStar 4s linear infinite;
+    }
+
+    @keyframes spinStar {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .logo-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 8.5vw, 6rem);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-top: 10px;
+      letter-spacing: 2px;
+      filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.8));
+    }
+
+    .logo-title .c {
+      color: var(--cyan);
+      text-shadow: 0 0 35px var(--cyan-glow), 0 0 10px var(--cyan), 0 6px 0 #007A8A;
+    }
+
+    .logo-title .o {
+      color: var(--orange);
+      text-shadow: 0 0 35px var(--orange-glow), 0 0 10px var(--orange), 0 6px 0 #993D00;
+    }
+
+    .logo-sub {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #FFFFFF;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+      margin-top: 12px;
+      letter-spacing: 1.5px;
+    }
+
+    /* Tutorial Cards */
+    .tuto-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      max-width: 960px;
+      width: 100%;
+    }
+
+    .tuto-card {
+      background: var(--space-card);
+      border: 2px solid var(--border-dim);
+      border-radius: var(--r-lg);
+      padding: 24px 20px;
+      text-align: center;
+      transition: var(--spring);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .tuto-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cyan), var(--orange));
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+
+    .tuto-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--border-highlight);
+      background: var(--space-card-hover);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7), 0 0 24px rgba(255, 255, 255, 0.15);
+    }
+
+    .tuto-card:hover::before {
+      opacity: 1;
+    }
+
+    .tuto-icon {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .tuto-icon img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.7));
+    }
+
+    .tuto-card h4 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .tuto-card p {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      line-height: 1.45;
+    }
+
+    .tuto-card .key-badge {
+      display: inline-block;
+      background: rgba(255, 210, 63, 0.16);
+      border: 1.5px solid var(--gold);
+      padding: 4px 14px;
+      border-radius: var(--r-sm);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--gold-bright);
+      margin-top: 12px;
+      box-shadow: 0 2px 8px rgba(255, 210, 63, 0.25);
+    }
+
+    /* CTA Buttons */
+    .btn-play {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 900;
+      padding: 18px 58px;
+      border: none;
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      color: #080613;
+      background: linear-gradient(135deg, var(--gold-bright), #FFAE00);
+      box-shadow: 0 8px 0 #996300, 0 16px 36px var(--gold-glow);
+      transition: var(--spring);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .btn-play:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 0 #996300, 0 24px 50px var(--gold-glow);
+      filter: brightness(1.1);
+    }
+
+    .btn-play:active {
+      transform: translateY(4px);
+      box-shadow: 0 4px 0 #996300;
+    }
+
+    .btn-play svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .btn-secondary {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 14px 32px;
+      border: 2px solid var(--border-bright);
+      border-radius: var(--r-pill);
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: var(--spring);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.22);
+      border-color: #FFFFFF;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary:active {
+      transform: translateY(2px);
+    }
+    }
+
+    .btn-secondary:active {
+      transform: translateY(2px);
+    }
+
+    /* ═══════ 2. IN-GAME HUD ═══════ */
+    .hud-layer {
+      position: absolute;
+      inset: 0;
+      padding: 24px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .hud-layer * {
+      pointer-events: auto;
+    }
+
+    .hud-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    /* Health: Máu nổi bật trên nền kính sang trọng */
+    .hp-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--space-glass);
+      backdrop-filter: blur(12px);
+      border: 2px solid var(--border-bright);
+      padding: 10px 22px;
+      border-radius: var(--r-pill);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .hp-label {
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .hearts {
+      display: flex;
+      gap: 8px;
+    }
+
+    .heart-svg {
+      width: 32px;
+      height: 32px;
+      filter: drop-shadow(0 0 8px var(--pink-glow));
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.18);
+      }
+    }
+
+    .heart-svg.lost {
+      filter: grayscale(1) opacity(0.3);
+      animation: none;
+    }
+
+    /* Phase Indicator: Đèn báo pha to, chữ phát quang rõ rệt */
+    .phase-indicator {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(20, 15, 45, 0.95);
+      padding: 10px 28px;
+      border-radius: var(--r-pill);
+      border: 2.5px solid var(--border-bright);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+      cursor: pointer;
+      transition: var(--spring);
+    }
+
+    .phase-indicator:hover {
+      transform: translateX(-50%) scale(1.08);
+    }
+
+    .phase-indicator.cyan {
+      border-color: var(--cyan);
+      box-shadow: 0 0 30px var(--cyan-glow), inset 0 0 15px rgba(0, 245, 255, 0.25);
+    }
+
+    .phase-indicator.orange {
+      border-color: var(--orange);
+      box-shadow: 0 0 30px var(--orange-glow), inset 0 0 15px rgba(255, 119, 0, 0.25);
+    }
+
+    .phase-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .phase-indicator.cyan .phase-dot {
+      background: var(--cyan);
+      box-shadow: 0 0 16px var(--cyan), 0 0 4px #FFF;
+    }
+
+    .phase-indicator.orange .phase-dot {
+      background: var(--orange);
+      box-shadow: 0 0 16px var(--orange), 0 0 4px #FFF;
+    }
+
+    .phase-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #FFFFFF;
+    }
+
+    .phase-indicator.cyan .phase-name {
+      color: var(--cyan-bright);
+      text-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    .phase-indicator.orange .phase-name {
+      color: var(--orange-bright);
+      text-shadow: 0 0 15px var(--orange-glow);
+    }
+
+    .phase-key {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 3px 10px;
+      border-radius: var(--r-sm);
+      color: #FFFFFF;
+    }
+
+    /* Score: Số điểm to, sắc nét, có bóng tương phản cao */
+    .score-box {
+      text-align: right;
+      background: var(--space-glass);
+      backdrop-filter: blur(12px);
+      border: 2px solid var(--border-bright);
+      padding: 10px 26px;
+      border-radius: var(--r-md);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .score-label {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--gold-bright);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(255, 210, 63, 0.4);
+    }
+
+    .score-num {
+      font-family: var(--font-mono);
+      font-size: 2.6rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #FFFFFF;
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .mult-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--gold-bright), #FF9900);
+      color: #080613;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: var(--r-pill);
+      margin-top: 6px;
+      box-shadow: 0 4px 14px var(--gold-glow);
+      animation: multPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes multPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.08);
+      }
+    }
+
+    /* HUD Bottom */
+    .hud-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    /* Buffs */
+    .buffs-row {
+      display: flex;
+      gap: 14px;
+    }
+
+    .buff-slot {
+      width: 58px;
+      height: 58px;
+      border-radius: var(--r-md);
+      background: var(--space-card);
+      border: 2px solid var(--border-bright);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: var(--spring);
+    }
+
+    .buff-slot:hover {
+      transform: translateY(-6px);
+    }
+
+    .buff-slot.gold {
+      border-color: var(--gold);
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    .buff-slot.green {
+      border-color: var(--green);
+      box-shadow: 0 0 20px var(--green-glow);
+    }
+
+    .buff-slot.purple {
+      border-color: var(--purple);
+      box-shadow: 0 0 20px var(--purple-glow);
+    }
+
+    .buff-slot img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+    }
+
+    .buff-timer {
+      position: absolute;
+      bottom: -8px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 800;
+      background: #FFFFFF;
+      color: #080613;
+      padding: 2px 8px;
+      border-radius: var(--r-pill);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Hyper-Drive Bar: Vạch sạc trực quan */
+    .hyper-box {
+      width: 420px;
+      background: var(--space-glass);
+      backdrop-filter: blur(12px);
+      border: 2px solid var(--border-bright);
+      border-radius: var(--r-lg);
+      padding: 16px 24px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .hyper-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .hyper-label {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--gold-bright);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 10px rgba(255, 210, 63, 0.4);
+    }
+
+    .hyper-status {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    .hyper-track {
+      width: 100%;
+      height: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: var(--r-pill);
+      overflow: hidden;
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      padding: 2px;
+    }
+
+    .hyper-fill {
+      height: 100%;
+      border-radius: var(--r-pill);
+      background: linear-gradient(90deg, #FF6600, #FFD23F);
+      box-shadow: 0 0 16px var(--gold-glow);
+      transition: width 0.4s ease;
+    }
+
+    .hyper-fill.full {
+      background: linear-gradient(90deg, #FFD23F, #FFFFFF, #00F5FF);
+      animation: hyperGlow 0.6s infinite alternate;
+    }
+
+    @keyframes hyperGlow {
+      0% {
+        box-shadow: 0 0 16px var(--gold-glow);
+      }
+
+      100% {
+        box-shadow: 0 0 36px var(--gold-glow), 0 0 60px rgba(0, 245, 255, 0.6);
+      }
+    }
+
+    .hyper-track {
+      width: 100%;
+      height: 12px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: var(--r-pill);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .hyper-fill {
+      height: 100%;
+      border-radius: var(--r-pill);
+      background: linear-gradient(90deg, var(--orange), var(--gold));
+      box-shadow: 0 0 12px var(--gold-glow);
+      transition: width 0.4s ease;
+    }
+
+    .hyper-fill.full {
+      background: linear-gradient(90deg, var(--gold), #FFF, var(--gold));
+      animation: hyperGlow 0.6s infinite alternate;
+    }
+
+    @keyframes hyperGlow {
+      0% {
+        box-shadow: 0 0 12px var(--gold-glow);
+      }
+
+      100% {
+        box-shadow: 0 0 28px var(--gold-glow), 0 0 60px rgba(255, 209, 102, 0.3);
+      }
+    }
+
+    /* Speed Lines khi HUD active */
+    .speed-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 4;
+      overflow: hidden;
+    }
+
+    .speed-line {
+      position: absolute;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: speedDash linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes speedDash {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.6;
+      }
+
+      90% {
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+
+    /* ═══════ 3. GAME OVER SCREEN ═══════ */
+    .screen-gameover {
+      background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(45, 15, 30, 0.92) 0%, rgba(8, 6, 18, 0.98) 100%);
+      backdrop-filter: blur(12px);
+    }
+
+    .go-card {
+      background: var(--space-card);
+      border: 3px solid var(--pink);
+      border-radius: var(--r-xl);
+      padding: 44px 56px;
+      max-width: 600px;
+      width: 92%;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 51, 102, 0.35);
+      animation: cardPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes cardPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .go-icon {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 16px;
+      background: radial-gradient(circle, rgba(255, 51, 102, 0.25) 0%, transparent 70%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .go-icon img {
+      width: 85%;
+      height: 85%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 24px var(--pink-glow));
+      animation: goShake 0.5s ease-in-out 0.3s;
+    }
+
+    @keyframes goShake {
+
+      0%,
+      100% {
+        transform: rotate(0);
+      }
+
+      25% {
+        transform: rotate(-8deg);
+      }
+
+      75% {
+        transform: rotate(8deg);
+      }
+    }
+
+    .go-title {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #FFFFFF;
+      text-shadow: 0 0 30px var(--pink-glow), 0 4px 0 #990026;
+      line-height: 1;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+
+    .go-reason {
+      color: var(--text-dim);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-cell {
+      background: rgba(14, 10, 32, 0.85);
+      border: 1.5px solid var(--border-bright);
+      border-radius: var(--r-md);
+      padding: 16px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .stat-cell .label {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--gold-bright);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .stat-cell .value {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    }
+
+    .stat-cell .value.gold {
+      color: var(--gold-bright);
+      text-shadow: 0 0 16px var(--gold-glow);
+    }
+
+    .stat-cell .value.cyan {
+      color: var(--cyan-bright);
+      text-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    .stat-cell .value.orange {
+      color: var(--orange-bright);
+      text-shadow: 0 0 16px var(--orange-glow);
+    }
+
+    .go-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    /* ═══════ 4. ASSET SHOWCASE ═══════ */
+    .screen-showcase {
+      background: rgba(8, 6, 18, 0.98);
+      backdrop-filter: blur(14px);
+      overflow-y: auto;
+      padding: 40px 24px 100px;
+      justify-content: flex-start;
+    }
+
+    .showcase-header {
+      text-align: center;
+      margin-bottom: 32px;
+      flex-shrink: 0;
+    }
+
+    .showcase-header h2 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--gold-bright);
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    .showcase-header p {
+      color: #FFFFFF;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: 6px;
+    }
+
+    /* Tab bộ asset */
+    .asset-tabs {
+      display: inline-flex;
+      gap: 8px;
+      background: rgba(26, 20, 56, 0.95);
+      padding: 6px;
+      border-radius: var(--r-pill);
+      border: 2px solid var(--border-bright);
+      margin-top: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .asset-tab {
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      font-weight: 700;
+      padding: 10px 24px;
+      border: none;
+      border-radius: var(--r-pill);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: var(--spring);
+    }
+
+    .asset-tab:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .asset-tab.active {
+      background: var(--gold);
+      color: #080613;
+      box-shadow: 0 4px 16px var(--gold-glow);
+    }
+
+    /* Asset Grid */
+    .asset-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 22px;
+      max-width: 1200px;
+      width: 100%;
+      flex-shrink: 0;
+      margin: 0 auto;
+    }
+
+    .asset-card {
+      background: var(--space-card);
+      border: 2px solid var(--border-bright);
+      border-radius: var(--r-lg);
+      padding: 24px 20px;
+      text-align: center;
+      transition: var(--spring);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .asset-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 24px rgba(255, 255, 255, 0.2);
+      border-color: #FFFFFF;
+      background: var(--space-card-hover);
+    }
+
+    .asset-card.cyan {
+      border-color: var(--cyan);
+      box-shadow: 0 8px 24px rgba(0, 245, 255, 0.25);
+    }
+
+    .asset-card.orange {
+      border-color: var(--orange);
+      box-shadow: 0 8px 24px rgba(255, 119, 0, 0.25);
+    }
+
+    .asset-card.green {
+      border-color: var(--green);
+      box-shadow: 0 8px 24px rgba(0, 245, 160, 0.25);
+    }
+
+    .asset-card.gold {
+      border-color: var(--gold);
+      box-shadow: 0 8px 24px rgba(255, 210, 63, 0.25);
+    }
+
+    .asset-thumb {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .asset-thumb img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.7));
+      transition: var(--spring);
+    }
+
+    .asset-card:hover .asset-thumb img {
+      transform: scale(1.15);
+    }
+
+    .asset-card h4 {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .asset-card .src {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--gold-bright);
+      margin-bottom: 10px;
+      background: rgba(255, 210, 63, 0.12);
+      padding: 3px 8px;
+      border-radius: var(--r-sm);
+      display: inline-block;
+    }
+
+    .asset-card p {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    /* ═══════ BOTTOM NAV BAR ═══════ */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 9000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      background: rgba(14, 10, 32, 0.98);
+      backdrop-filter: blur(20px);
+      border-top: 2px solid var(--border-bright);
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.8);
+    }
+
+    .nav-btn {
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      font-weight: 700;
+      padding: 11px 22px;
+      border: 2px solid var(--border-bright);
+      border-radius: var(--r-pill);
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: var(--spring);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #FFFFFF;
+      transform: translateY(-2px);
+    }
+
+    .nav-btn.active {
+      color: #080613;
+      background: var(--gold-bright);
+      border-color: var(--gold-bright);
+      box-shadow: 0 4px 20px var(--gold-glow);
+      font-weight: 800;
+    }
+
+    .nav-btn.active.c-cyan {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: 0 4px 20px var(--cyan-glow);
+      color: #080613;
+    }
+
+    .nav-btn.active.c-orange {
+      background: var(--orange);
+      border-color: var(--orange);
+      box-shadow: 0 4px 20px var(--orange-glow);
+      color: #FFFFFF;
+    }
+
+    .nav-sep {
+      width: 2px;
+      height: 28px;
+      background: var(--border-bright);
+      margin: 0 6px;
+    }
+
+    .bgm-btn {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 10px 20px;
+      border: 2px solid var(--purple);
+      border-radius: var(--r-pill);
+      background: rgba(178, 75, 243, 0.25);
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: var(--spring);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(178, 75, 243, 0.35);
+    }
+
+    .bgm-btn:hover {
+      background: var(--purple);
+      border-color: #FFFFFF;
+      transform: scale(1.05);
+    }
+
+    .bgm-btn.playing {
+      background: var(--pink);
+      border-color: #FFFFFF;
+      box-shadow: 0 0 20px var(--pink-glow);
+    }
+
+    /* ═══════ INTERACTION TOAST ═══════ */
+    .toast {
+      position: fixed;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 900;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+      padding: 14px 36px;
+      border-radius: var(--r-pill);
+      background: rgba(14, 10, 32, 0.92);
+      border: 2.5px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+      letter-spacing: 1.5px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .toast.gold {
+      color: var(--gold-bright);
+      border-color: var(--gold);
+      box-shadow: 0 0 40px var(--gold-glow);
+    }
+
+    .toast.pink {
+      color: #FFF;
+      border-color: var(--pink);
+      box-shadow: 0 0 40px var(--pink-glow);
+      text-shadow: 0 0 16px var(--pink-glow);
+    }
+
+    .toast.cyan {
+      color: var(--cyan-bright);
+      border-color: var(--cyan);
+      box-shadow: 0 0 40px var(--cyan-glow);
+    }
+
+    .toast.orange {
+      color: var(--orange-bright);
+      border-color: var(--orange);
+      box-shadow: 0 0 40px var(--orange-glow);
+    }
+
+    /* ═══════ RESPONSIVE ═══════ */
+    @media (max-width: 768px) {
+      .tuto-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        max-width: 400px;
+      }
+
+      .logo-title {
+        font-size: 2.8rem;
+      }
+
+      .nav-bar {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .nav-btn {
+        font-size: 0.72rem;
+        padding: 8px 14px;
+      }
+
+      .hyper-box {
+        width: 260px;
+      }
+
+      .go-card {
+        padding: 28px 24px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════ FULLSCREEN VIEWPORT (GÓC CHƠI CHÍNH DIỆN HỘI TỤ TỐC ĐỘ CAO) ═══════ -->
+  <div class="viewport" id="viewport">
+
+    <!-- Star Particles lướt nhẹ -->
+    <div class="star-field" id="starField"></div>
+
+    <!-- ─── HUD TELEMETRY 2 BÊN RÌA MÀN HÌNH (CHUẨN HÌNH ẢNH MẪU) ─── -->
+    <div class="telemetry-left">
+      <div class="telemetry-node"><span class="telemetry-line"></span><span>+20°</span></div>
+      <div class="telemetry-node"><span class="telemetry-line"></span><span>+10°</span></div>
+      <div class="telemetry-node active-pitch"><span class="telemetry-line"></span><span>00°</span></div>
+      <div class="telemetry-node"><span class="telemetry-line"></span><span>-10°</span></div>
+      <div class="telemetry-node"><span class="telemetry-line"></span><span>-20°</span></div>
+    </div>
+
+    <div class="telemetry-right">
+      <div class="telemetry-right-node"><span>SECT 01</span><span class="telemetry-right-line"></span></div>
+      <div class="telemetry-right-node"><span>GRID 4C</span><span class="telemetry-right-line"></span></div>
+      <div class="telemetry-right-node active-prox"><span>PROX LOCK</span><span class="telemetry-right-line"></span>
+      </div>
+      <div class="telemetry-right-node"><span>ALT 1.2K</span><span class="telemetry-right-line"></span></div>
+      <div class="telemetry-right-node"><span>ION FLUX</span><span class="telemetry-right-line"></span></div>
+    </div>
+
+    <!-- ─── ĐƯỜNG BAY 3D PHỐI CẢNH HỘI TỤ CHÍNH TÂM (VANISHING POINT TUNNEL) ─── -->
+    <div class="tunnel-container">
+      <!-- Cổng không gian thật tại chân trời: pipe_ring_SE.png -->
+      <div class="horizon-point">
+        <img src="assets/models/Isometric/pipe_ring_SE.png" alt="Portal Ring"
+          style="width:110px; height:auto; opacity:0.85; filter:drop-shadow(0 0 20px var(--cyan-glow));">
+        <div class="horizon-crosshair"></div>
+      </div>
+
+      <!-- Lưới tia phân làn và vạch ngang phối cảnh chiếu từ chân trời -->
+      <svg class="perspective-grid-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="rayGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#00F5FF" stop-opacity="0.1" />
+            <stop offset="30%" stop-color="#00F5FF" stop-opacity="0.3" />
+            <stop offset="100%" stop-color="#00F5FF" stop-opacity="0.9" />
+          </linearGradient>
+          <linearGradient id="edgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#00F5FF" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="#00F5FF" stop-opacity="0.95" />
+          </linearGradient>
+        </defs>
+
+        <!-- Trục giữa nét đứt -->
+        <line x1="500" y1="250" x2="500" y2="1000" stroke="#00F5FF" stroke-width="2" stroke-dasharray="14, 12"
+          opacity="0.65" />
+
+        <!-- Hệ thống 6 ray phân định 5 LÀN ĐƯỜNG RỘNG RÃI tỏa từ chân trời -->
+        <line x1="500" y1="250" x2="440" y2="1000" stroke="url(#rayGrad)" stroke-width="2.5" opacity="0.8" />
+        <line x1="500" y1="250" x2="560" y2="1000" stroke="url(#rayGrad)" stroke-width="2.5" opacity="0.8" />
+        <line x1="500" y1="250" x2="310" y2="1000" stroke="url(#rayGrad)" stroke-width="2.4" opacity="0.75" />
+        <line x1="500" y1="250" x2="690" y2="1000" stroke="url(#rayGrad)" stroke-width="2.4" opacity="0.75" />
+        <line x1="500" y1="250" x2="180" y2="1000" stroke="url(#rayGrad)" stroke-width="2.2" opacity="0.7" />
+        <line x1="500" y1="250" x2="820" y2="1000" stroke="url(#rayGrad)" stroke-width="2.2" opacity="0.7" />
+
+        <!-- Hai dải ray biên bảo vệ ngoài cùng -->
+        <line x1="500" y1="250" x2="60" y2="1000" stroke="url(#edgeGrad)" stroke-width="3.5" opacity="0.9" />
+        <line x1="500" y1="250" x2="940" y2="1000" stroke="url(#edgeGrad)" stroke-width="3.5" opacity="0.9" />
+
+        <!-- Các vạch ngang di chuyển dọc theo làn đường tạo cảm giác lướt gió -->
+        <g class="lane-bars-group" stroke="#00F5FF" stroke-opacity="0.35" stroke-width="1.5">
+          <line x1="450" y1="360" x2="550" y2="360" />
+          <line x1="400" y1="480" x2="600" y2="480" stroke-opacity="0.45" stroke-width="2" />
+          <line x1="330" y1="620" x2="670" y2="620" stroke-opacity="0.6" stroke-width="2.5" />
+          <line x1="240" y1="780" x2="760" y2="780" stroke-opacity="0.75" stroke-width="3" />
+          <line x1="120" y1="960" x2="880" y2="960" stroke-opacity="0.9" stroke-width="3.5" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- ─── CÁC MỤC TIÊU HUD TARGET TRÊN 5 LÀN ĐƯỜNG (DÙNG ASSET CÓ SẴN) ─── -->
+    <div class="track-targets-layer">
+      <!-- LÀN 1 (Cực trái): Thiên thạch khổng lồ AST-01: asset_new/asteroid_cute.png -->
+      <div class="hud-target target-meteor-farleft" onclick="hitDamage()">
+        <div class="target-box">
+          <img src="asset_new/asteroid_cute.png" alt="Asteroid Cute"
+            style="width:85%; height:85%; object-fit:contain; filter:drop-shadow(0 0 10px rgba(255,51,102,0.6));">
+        </div>
+        <div class="target-label-red">AST - 01 // NÉ!</div>
+      </div>
+
+      <!-- LÀN 2 (Trái trong): Tinh thể Pha 2 Cam: asset_new/crystal_orange.png -->
+      <div class="hud-target target-pha-cam" onclick="eatCrystal('cam')">
+        <div class="target-box">
+          <img src="asset_new/crystal_orange.png" alt="Pha 2 Cam">
+        </div>
+        <div class="target-label-cam">PHA 2 // CAM</div>
+      </div>
+
+      <!-- LÀN 3 (Chính giữa): Tinh thể Pha 1 Cyan: asset_new/crystal_cyan.png -->
+      <div class="hud-target target-pha-cyan" id="targetPha1" onclick="eatCrystal('cyan')">
+        <div class="target-box">
+          <img src="asset_new/crystal_cyan.png" alt="Pha 1 Cyan">
+        </div>
+        <div class="target-label-cyan" id="targetPha1Label">PHA 1 // MATCH</div>
+      </div>
+
+      <!-- LÀN 4 (Phải trong): Lõi sửa chữa: asset_new/repair_core.png -->
+      <div class="hud-target target-repair-core" onclick="eatRepairCore()">
+        <div class="target-box">
+          <img src="asset_new/repair_core.png" alt="Repair Core" style="width:75%; height:75%; object-fit:contain;">
+        </div>
+        <div class="target-label-green">REPAIR CORE</div>
+      </div>
+
+      <!-- LÀN 5 (Cực phải): Sao Đôi x2 Điểm: asset_new/resonance_shard.png -->
+      <div class="hud-target target-shard-farright" onclick="addScore(500); showToast('⭐ ×2 ĐIỂM SỐ!', 'gold');">
+        <div class="target-box">
+          <img src="asset_new/resonance_shard.png" alt="Resonance Shard"
+            style="width:85%; height:85%; object-fit:contain; filter:drop-shadow(0 0 12px var(--gold-glow));">
+        </div>
+        <div class="target-label-gold">SHARD // ×2 ĐIỂM</div>
+      </div>
+
+      <!-- Thiên thạch thật AST-09 (Khu vực giữa làn 4 & 5): meteor_detailed_SE.png -->
+      <div class="hud-target target-asteroid" onclick="hitDamage()">
+        <span class="ast-label">AST - 09</span>
+        <div class="ast-wireframe"
+          style="width:68px; height:68px; display:flex; align-items:center; justify-content:center;">
+          <img src="assets/models/Isometric/meteor_detailed_SE.png" alt="Meteor AST-09"
+            style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 0 14px rgba(255,100,50,0.5));">
+        </div>
+      </div>
+
+      <!-- Popup điểm thưởng né sát (NEAR-MISS EVASION) -->
+      <div class="near-miss-popup" onclick="addScore(250)">
+        <span class="near-miss-icon">⚡</span>
+        <div>
+          <div class="near-miss-pts">+250 PTS</div>
+          <div class="near-miss-sub">NEAR-MISS EVASION</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PHI THUYỀN CHIBI (ASSET THẬT: asset_new/ship_chibi.png) ─── -->
+    <div class="player-ship-container phase-cyan" id="playerShipContainer" onclick="togglePhase()"
+      title="Click vào tàu để đổi pha! Phím A/D lướt làn, phím M đổi phi thuyền">
+      <img class="player-ship-img" id="playerShipImg" src="asset_new/ship_chibi.png" alt="Player Ship">
+      <div class="ship-thruster-flame" id="playerThruster"></div>
+      <div class="ship-thruster-trace" id="playerTrace"></div>
+    </div>
+
+    <!-- ═══════ SCREEN 1: START ═══════ -->
+    <div class="overlay screen-start" id="screenStart">
+      <div class="logo-block">
+        <div class="logo-badge">
+          <img src="assets/textures/particles/PNG (Transparent)/star_04.png" alt="">
+          REFLEX ARCADE RUNNER
+          <img src="assets/textures/particles/PNG (Transparent)/star_04.png" alt="">
+        </div>
+        <h1 class="logo-title">
+          <span class="c">VOID</span> <span class="o">SHIFT</span>
+        </h1>
+        <p class="logo-sub">Chuyển Pha Năng Lượng · Lướt Vũ Trụ Siêu Tốc</p>
+      </div>
+
+      <div class="tuto-row">
+        <div class="tuto-card">
+          <div class="tuto-icon">
+            <img src="assets/models/Isometric/craft_speederA_SE.png" alt="Lướt">
+          </div>
+          <h4>Lướt & Né</h4>
+          <p>Lướt ngang để né thiên thạch và nhặt vật phẩm năng lượng.</p>
+          <span class="key-badge">A / D</span>
+        </div>
+        <div class="tuto-card">
+          <div class="tuto-icon">
+            <img src="asset_new/crystal_cyan.png" alt="Pha">
+          </div>
+          <h4>Đổi Pha</h4>
+          <p>Chuyển <strong style="color:var(--cyan)">Băng</strong> ↔ <strong style="color:var(--orange)">Lửa</strong>
+            để ăn đúng tinh thể.</p>
+          <span class="key-badge">SPACE</span>
+        </div>
+        <div class="tuto-card">
+          <div class="tuto-icon">
+            <img src="assets/models/Isometric/pipe_ring_SE.png" alt="Hyper">
+          </div>
+          <h4>Hyper-Drive</h4>
+          <p>Xuyên cổng vòng để bứt tốc & nhân đôi điểm!</p>
+          <span class="key-badge">AUTO</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:16px; align-items:center;">
+        <button class="btn-play" onclick="goTo('hud-cyan')">
+          BẮT ĐẦU
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══════ SCREEN 2: HUD ═══════ -->
+    <div class="hud-layer" id="screenHUD" style="display:none;">
+      <div class="hud-top">
+        <!-- Health -->
+        <div class="hp-box">
+          <span class="hp-label">HP</span>
+          <div class="hearts">
+            <svg class="heart-svg" viewBox="0 0 24 24" fill="#EF476F">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <svg class="heart-svg" viewBox="0 0 24 24" fill="#EF476F">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <svg class="heart-svg" id="heart3" viewBox="0 0 24 24" fill="#EF476F">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Phase Indicator -->
+        <div class="phase-indicator cyan" id="phaseIndicator" onclick="togglePhase()">
+          <div class="phase-dot"></div>
+          <span class="phase-name" id="phaseName">PHA BĂNG</span>
+          <span class="phase-key">SPACE</span>
+        </div>
+
+        <!-- Score -->
+        <div class="score-box">
+          <div class="score-label">ĐIỂM</div>
+          <div class="score-num" id="scoreDisplay">02,480</div>
+          <div class="mult-badge" id="multBadge">⭐ ×2 (5s)</div>
+        </div>
+      </div>
+
+      <div class="hud-bottom">
+        <!-- Buffs -->
+        <div class="buffs-row">
+          <div class="buff-slot gold" title="Nhân đôi điểm">
+            <img src="assets/textures/particles/PNG (Transparent)/star_01.png" alt="Star">
+            <div class="buff-timer">5s</div>
+          </div>
+          <div class="buff-slot green" title="Khiên bảo vệ">
+            <img src="asset_new/repair_core.png" alt="Repair">
+            <div class="buff-timer">MAX</div>
+          </div>
+          <div class="buff-slot purple" title="Từ trường hút">
+            <img src="assets/textures/particles/PNG (Transparent)/magic_02.png" alt="Magnet">
+            <div class="buff-timer">3s</div>
+          </div>
+        </div>
+
+        <!-- Hyper-Drive -->
+        <div class="hyper-box">
+          <div class="hyper-head">
+            <span class="hyper-label">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              HYPER-DRIVE
+            </span>
+            <span class="hyper-status" id="hyperStatus" style="color:var(--gold)">78%</span>
+          </div>
+          <div class="hyper-track">
+            <div class="hyper-fill" id="hyperFill" style="width:78%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ SCREEN 3: GAME OVER ═══════ -->
+    <div class="overlay screen-gameover hidden" id="screenGameOver">
+      <div class="go-card">
+        <div class="go-icon">
+          <img src="assets/models/Isometric/meteor_half_SE.png" alt="Vỡ">
+        </div>
+        <h2 class="go-title">HẾT ĐIỂM BỀN!</h2>
+        <p class="go-reason">Con tàu đã va chạm với thiên thạch ở tốc độ cao.</p>
+
+        <div class="stats-grid">
+          <div class="stat-cell">
+            <div class="label">ĐIỂM ĐẠT ĐƯỢC</div>
+            <div class="value">18,920</div>
+          </div>
+          <div class="stat-cell">
+            <div class="label">KỶ LỤC</div>
+            <div class="value gold">24,500</div>
+          </div>
+          <div class="stat-cell">
+            <div class="label">TINH THỂ</div>
+            <div class="value cyan">42 💎</div>
+          </div>
+          <div class="stat-cell">
+            <div class="label">LƯỚT SÁT</div>
+            <div class="value orange">14 ⚡</div>
+          </div>
+        </div>
+
+        <div class="go-actions">
+          <button class="btn-play" style="font-size:1.1rem; padding:14px 36px;" onclick="goTo('hud-cyan')">CHƠI
+            LẠI</button>
+          <button class="btn-secondary" onclick="goTo('start')">VỀ MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ SCREEN 4: ASSET SHOWCASE ═══════ -->
+    <div class="overlay screen-showcase hidden" id="screenShowcase">
+      <div class="showcase-header">
+        <h2>🎨 BỘ TÀI NGUYÊN GAME</h2>
+        <p>Asset gốc (Kenney) + Asset chibi mới tạo (asset_new)</p>
+        <div class="asset-tabs">
+          <button class="asset-tab active" id="tabNew" onclick="switchAssetTab('new')">🎨 Chibi Mới</button>
+          <button class="asset-tab" id="tabKenney" onclick="switchAssetTab('kenney')">🚀 Kenney Gốc</button>
+          <button class="asset-tab" id="tabVfx" onclick="switchAssetTab('vfx')">✨ VFX & Hạt</button>
+        </div>
+      </div>
+
+      <!-- Tab: Asset Mới -->
+      <div class="asset-grid" id="gridNew">
+        <div class="asset-card cyan">
+          <div class="asset-thumb"><img src="asset_new/ship_chibi.png" alt=""></div>
+          <h4>Phi Thuyền Chibi</h4>
+          <div class="src">ship_chibi.png</div>
+          <p>Dáng hoạt hình tròn mập, buồng lái kính to, luồng đẩy neon.</p>
+        </div>
+        <div class="asset-card cyan">
+          <div class="asset-thumb"><img src="asset_new/crystal_cyan.png" alt=""></div>
+          <h4>Tinh Thể Băng</h4>
+          <div class="src">crystal_cyan.png</div>
+          <p>Cyan phát sáng mềm mại, bo góc kẹo ngọt lấp lánh.</p>
+        </div>
+        <div class="asset-card orange">
+          <div class="asset-thumb"><img src="asset_new/crystal_orange.png" alt=""></div>
+          <h4>Tinh Thể Lửa</h4>
+          <div class="src">crystal_orange.png</div>
+          <p>Hổ phách rực rỡ, bề mặt bóng bẩy ấm áp.</p>
+        </div>
+        <div class="asset-card">
+          <div class="asset-thumb"><img src="asset_new/asteroid_cute.png" alt=""></div>
+          <h4>Thiên Thạch Mập</h4>
+          <div class="src">asteroid_cute.png</div>
+          <p>Khối đá tròn trịa, miệng hố bo tròn ngộ nghĩnh.</p>
+        </div>
+        <div class="asset-card green">
+          <div class="asset-thumb"><img src="asset_new/repair_core.png" alt=""></div>
+          <h4>Lõi Hồi Máu</h4>
+          <div class="src">repair_core.png</div>
+          <p>Hộp cứu thương năng lượng phát quang xanh ngọc.</p>
+        </div>
+        <div class="asset-card gold">
+          <div class="asset-thumb"><img src="asset_new/resonance_shard.png" alt=""></div>
+          <h4>Sao Đôi ×2</h4>
+          <div class="src">resonance_shard.png</div>
+          <p>Mảnh sao đôi vàng kim nhân đôi điểm số.</p>
+        </div>
+      </div>
+
+      <!-- Tab: Kenney -->
+      <div class="asset-grid" id="gridKenney" style="display:none;">
+        <div class="asset-card cyan">
+          <div class="asset-thumb"><img src="assets/models/Isometric/craft_racer_SE.png" alt=""></div>
+          <h4>Craft Racer</h4>
+          <div class="src">craft_racer_SE.png</div>
+          <p>Phi thuyền đua cánh vát, góc nhìn sau đuôi cân đối.</p>
+        </div>
+        <div class="asset-card">
+          <div class="asset-thumb"><img src="assets/models/Isometric/craft_speederA_SE.png" alt=""></div>
+          <h4>Speeder A</h4>
+          <div class="src">craft_speederA_SE.png</div>
+          <p>Mũi nhọn, vát cạnh sắc nét, đậm chất phản xạ nhanh.</p>
+        </div>
+        <div class="asset-card">
+          <div class="asset-thumb"><img src="assets/models/Isometric/meteor_detailed_SE.png" alt=""></div>
+          <h4>Thiên Thạch</h4>
+          <div class="src">meteor_detailed_SE.png</div>
+          <p>Khối đá low-poly đa giác vát cạnh sắc nét.</p>
+        </div>
+        <div class="asset-card orange">
+          <div class="asset-thumb"><img src="assets/models/Isometric/rock_crystals_SE.png" alt=""></div>
+          <h4>Tinh Thể Đá</h4>
+          <div class="src">rock_crystals_SE.png</div>
+          <p>Vật phẩm ăn điểm, tỏa sáng theo pha.</p>
+        </div>
+        <div class="asset-card green">
+          <div class="asset-thumb"><img src="assets/models/Isometric/machine_generator_NE.png" alt=""></div>
+          <h4>Máy Phát Năng Lượng</h4>
+          <div class="src">machine_generator_NE.png</div>
+          <p>Lõi sửa chữa hồi phục 1 điểm bền.</p>
+        </div>
+        <div class="asset-card gold">
+          <div class="asset-thumb"><img src="assets/models/Isometric/pipe_ring_SE.png" alt=""></div>
+          <h4>Cổng Hyper-Drive</h4>
+          <div class="src">pipe_ring_SE.png</div>
+          <p>Vòng tròn kích hoạt tăng tốc bứt phá.</p>
+        </div>
+        <div class="asset-card">
+          <div class="asset-thumb"><img src="assets/models/Isometric/craft_speederB_SE.png" alt=""></div>
+          <h4>Speeder B</h4>
+          <div class="src">craft_speederB_SE.png</div>
+          <p>Biến thể phi thuyền tốc độ kiểu cánh delta.</p>
+        </div>
+        <div class="asset-card">
+          <div class="asset-thumb"><img src="assets/models/Isometric/craft_miner_SE.png" alt=""></div>
+          <h4>Craft Miner</h4>
+          <div class="src">craft_miner_SE.png</div>
+          <p>Tàu khai thác khoáng sản, dáng chắc khỏe.</p>
+        </div>
+      </div>
+
+      <!-- Tab: VFX -->
+      <div class="asset-grid" id="gridVfx" style="display:none;">
+        <div class="asset-card cyan">
+          <div class="asset-thumb"><img src="assets/textures/particles/PNG (Transparent)/flame_01.png" alt=""
+              style="filter:drop-shadow(0 0 12px var(--cyan-glow))"></div>
+          <h4>Lửa Phản Lực</h4>
+          <div class="src">flame_01.png</div>
+          <p>Texture hạt lửa trong suốt gắn đuôi phi thuyền.</p>
+        </div>
+        <div class="asset-card orange">
+          <div class="asset-thumb"><img src="assets/textures/particles/PNG (Transparent)/fire_01.png" alt=""
+              style="filter:drop-shadow(0 0 12px var(--orange-glow))"></div>
+          <h4>Cầu Lửa</h4>
+          <div class="src">fire_01.png</div>
+          <p>Hiệu ứng nổ, cháy khi va chạm.</p>
+        </div>
+        <div class="asset-card gold">
+          <div class="asset-thumb"><img src="assets/textures/particles/PNG (Transparent)/star_01.png" alt=""
+              style="filter:drop-shadow(0 0 12px var(--gold-glow))"></div>
+          <h4>Hạt Sao</h4>
+          <div class="src">star_01.png</div>
+          <p>Lấp lánh khi nhặt mảnh cộng hưởng vàng.</p>
+        </div>
+        <div class="asset-card">
+          <div class="asset-thumb"><img src="assets/textures/particles/PNG (Transparent)/spark_01.png" alt=""
+              style="filter:drop-shadow(0 0 10px rgba(255,255,255,0.5))"></div>
+          <h4>Tia Lửa</h4>
+          <div class="src">spark_01.png</div>
+          <p>Tia sáng khi lướt sát vật cản.</p>
+        </div>
+        <div class="asset-card">
+          <div class="asset-thumb"><img src="assets/textures/particles/PNG (Transparent)/smoke_01.png" alt=""></div>
+          <h4>Khói Vụn</h4>
+          <div class="src">smoke_01.png</div>
+          <p>Khói phủ khi thiên thạch bị vỡ tan.</p>
+        </div>
+        <div class="asset-card cyan">
+          <div class="asset-thumb"><img src="assets/textures/particles/PNG (Transparent)/circle_01.png" alt=""
+              style="filter:drop-shadow(0 0 14px var(--cyan-glow))"></div>
+          <h4>Quầng Sáng</h4>
+          <div class="src">circle_01.png</div>
+          <p>Vòng sáng bao quanh vật phẩm đặc biệt.</p>
+        </div>
+        <div class="asset-card">
+          <div class="asset-thumb"><img src="assets/textures/particles/PNG (Transparent)/twirl_01.png" alt=""
+              style="filter:drop-shadow(0 0 10px rgba(157,78,221,0.5))"></div>
+          <h4>Xoáy Năng Lượng</h4>
+          <div class="src">twirl_01.png</div>
+          <p>Hiệu ứng xoáy khi kích hoạt Hyper-Drive.</p>
+        </div>
+        <div class="asset-card">
+          <div class="asset-thumb"><img src="assets/textures/particles/PNG (Transparent)/magic_02.png" alt=""
+              style="filter:drop-shadow(0 0 10px rgba(0,240,255,0.4))"></div>
+          <h4>Ma Thuật</h4>
+          <div class="src">magic_02.png</div>
+          <p>Hạt phép thuật bay xung quanh khiên.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /viewport -->
+
+  <!-- ═══════ BOTTOM NAV BAR ═══════ -->
+  <nav class="nav-bar">
+    <button class="nav-btn active" id="navStart" onclick="goTo('start')">🎮 Bắt Đầu</button>
+    <button class="nav-btn" id="navCyan" onclick="goTo('hud-cyan')">❄️ HUD Cyan</button>
+    <button class="nav-btn" id="navOrange" onclick="goTo('hud-orange')">🔥 HUD Cam</button>
+    <button class="nav-btn" id="navGO" onclick="goTo('gameover')">💥 Game Over</button>
+    <button class="nav-btn" id="navShowcase" onclick="goTo('showcase')">📦 Assets</button>
+    <div class="nav-sep"></div>
+    <!-- Nút đổi 5 Làn / 3 Làn -->
+    <button class="nav-btn" id="btnToggleLane" onclick="toggleLaneMode()"
+      title="Bấm để đổi giữa 5 Làn và 3 Làn [Phím L]">🛣️ <span id="laneLabel">5 Làn (Phím L)</span></button>
+    <!-- Nút đổi Phi Thuyền Chibi / Racer -->
+    <button class="nav-btn" onclick="toggleShipModel()" title="Đổi mẫu phi thuyền [Phím M]">🚀 Đổi Tàu [M]</button>
+    <div class="nav-sep"></div>
+    <button class="bgm-btn" id="bgmBtn" onclick="toggleBGM()">🎵 <span id="bgmLabel">Nhạc Nền</span></button>
+  </nav>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Audio -->
+  <audio id="sfxClick" src="assets/audio/ui/Audio/click_002.ogg" preload="auto"></audio>
+  <audio id="sfxPhase" src="assets/audio/sci-fi/Audio/forceField_000.ogg" preload="auto"></audio>
+  <audio id="sfxScore" src="assets/audio/sci-fi/Audio/laserRetro_004.ogg" preload="auto"></audio>
+  <audio id="sfxCrash" src="assets/audio/sci-fi/Audio/explosionCrunch_000.ogg" preload="auto"></audio>
+  <audio id="sfxHyper" src="assets/audio/sci-fi/Audio/thrusterFire_001.ogg" preload="auto"></audio>
+  <audio id="bgm" src="assets/audio/bgm/laserpack_bgm.mp3" loop preload="auto"></audio>
+
+  <script>
+    // ═══════ STATE ═══════
+    let phase = 'cyan';
+    let score = 2480;
+    let hearts = 3;
+    let hyperPercent = 78;
+    let hyperReady = false;
+    let bgmPlaying = false;
+    let currentView = 'start';
+
+    // Hệ thống làn đường: Hỗ trợ 5 LÀN (Mặc định) hoặc 3 LÀN
+    let laneMode = 5;
+    const lanePositions5 = ['24%', '37%', '50%', '63%', '76%'];
+    const lanePositions3 = ['37%', '50%', '63%'];
+    let lanePositions = lanePositions5;
+    let currentLane = 2; // Vị trí chính giữa (50%)
+
+    // Chuyển đổi giữa 5 Làn và 3 Làn
+    function toggleLaneMode() {
+      playSFX('sfxClick');
+      const label = document.getElementById('laneLabel');
+      if (laneMode === 5) {
+        laneMode = 3;
+        lanePositions = lanePositions3;
+        currentLane = 1; // Giữa của 3 làn
+        if (label) label.textContent = '3 Làn (Phím L)';
+        showToast('🛣️ CHẾ ĐỘ 3 LÀN (CƠ BẢN)', 'cyan');
+      } else {
+        laneMode = 5;
+        lanePositions = lanePositions5;
+        currentLane = 2; // Giữa của 5 làn
+        if (label) label.textContent = '5 Làn (Phím L)';
+        showToast('🛣️ CHẾ ĐỘ 5 LÀN (RỘNG RÃI)', 'gold');
+      }
+      const ship = document.getElementById('playerShipContainer');
+      if (ship) {
+        ship.style.left = lanePositions[currentLane];
+      }
+    }
+
+    // ═══════ INIT: Tạo star particles ═══════
+    (function initParticles() {
+      const field = document.getElementById('starField');
+      const starTextures = [
+        'assets/textures/particles/PNG (Transparent)/star_01.png',
+        'assets/textures/particles/PNG (Transparent)/star_04.png',
+        'assets/textures/particles/PNG (Transparent)/star_06.png',
+        'assets/textures/particles/PNG (Transparent)/star_08.png',
+        'assets/textures/particles/PNG (Transparent)/circle_05.png',
+        'assets/textures/particles/PNG (Transparent)/spark_02.png',
+      ];
+
+      for (let i = 0; i < 24; i++) {
+        const p = document.createElement('div');
+        p.className = 'sf-particle';
+        const tex = starTextures[Math.floor(Math.random() * starTextures.length)];
+        const size = 8 + Math.random() * 18;
+        p.style.cssText = `
+          left: ${Math.random() * 100}%;
+          top: ${Math.random() * 35}%;
+          width: ${size}px; height: ${size}px;
+          background-image: url('${tex}');
+          animation-duration: ${2.5 + Math.random() * 4}s;
+          animation-delay: ${Math.random() * 4}s;
+          opacity: ${0.25 + Math.random() * 0.55};
+        `;
+        field.appendChild(p);
+      }
+    })();
+
+    // ═══════ AUDIO HELPERS ═══════
+    function playSFX(id) {
+      try {
+        const a = document.getElementById(id);
+        if (a) { a.currentTime = 0; a.play().catch(() => { }); }
+      } catch (e) { }
+    }
+
+    function toggleBGM() {
+      const bgmEl = document.getElementById('bgm');
+      const btn = document.getElementById('bgmBtn');
+      const label = document.getElementById('bgmLabel');
+      if (!bgmPlaying) {
+        bgmEl.play().then(() => {
+          bgmPlaying = true;
+          label.textContent = 'Dừng Nhạc';
+          btn.classList.add('playing');
+        }).catch(() => alert('Click vào trang trước để cho phép phát âm thanh!'));
+      } else {
+        bgmEl.pause();
+        bgmPlaying = false;
+        label.textContent = 'Nhạc Nền';
+        btn.classList.remove('playing');
+      }
+    }
+
+    // ═══════ NAVIGATION ═══════
+    function goTo(view) {
+      playSFX('sfxClick');
+      currentView = view;
+
+      // Hide all overlays
+      document.getElementById('screenStart').classList.add('hidden');
+      document.getElementById('screenGameOver').classList.add('hidden');
+      document.getElementById('screenShowcase').classList.add('hidden');
+      document.getElementById('screenHUD').style.display = 'none';
+
+      const ship = document.getElementById('playerShipContainer');
+      const targets = document.querySelector('.track-targets-layer');
+      const telemL = document.querySelector('.telemetry-left');
+      const telemR = document.querySelector('.telemetry-right');
+
+      // Reset nav buttons
+      document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active', 'c-cyan', 'c-orange'); });
+
+      switch (view) {
+        case 'start':
+          document.getElementById('screenStart').classList.remove('hidden');
+          if (ship) ship.style.display = 'flex';
+          if (targets) targets.style.opacity = '0.35';
+          if (telemL) telemL.style.opacity = '0.4';
+          if (telemR) telemR.style.opacity = '0.4';
+          document.getElementById('navStart').classList.add('active');
+          break;
+
+        case 'hud-cyan':
+          document.getElementById('screenHUD').style.display = 'flex';
+          setPhase('cyan');
+          if (ship) ship.style.display = 'flex';
+          if (targets) targets.style.opacity = '1';
+          if (telemL) telemL.style.opacity = '1';
+          if (telemR) telemR.style.opacity = '1';
+          document.getElementById('navCyan').classList.add('active', 'c-cyan');
+          break;
+
+        case 'hud-orange':
+          document.getElementById('screenHUD').style.display = 'flex';
+          setPhase('orange');
+          if (ship) ship.style.display = 'flex';
+          if (targets) targets.style.opacity = '1';
+          if (telemL) telemL.style.opacity = '1';
+          if (telemR) telemR.style.opacity = '1';
+          document.getElementById('navOrange').classList.add('active', 'c-orange');
+          break;
+
+        case 'gameover':
+          document.getElementById('screenGameOver').classList.remove('hidden');
+          if (ship) ship.style.display = 'none';
+          if (targets) targets.style.opacity = '0.15';
+          if (telemL) telemL.style.opacity = '0.2';
+          if (telemR) telemR.style.opacity = '0.2';
+          document.getElementById('navGO').classList.add('active');
+          break;
+
+        case 'showcase':
+          document.getElementById('screenShowcase').classList.remove('hidden');
+          if (ship) ship.style.display = 'none';
+          if (targets) targets.style.opacity = '0.08';
+          if (telemL) telemL.style.opacity = '0.1';
+          if (telemR) telemR.style.opacity = '0.1';
+          document.getElementById('navShowcase').classList.add('active');
+          break;
+      }
+    }
+
+    // ═══════ SHIP MODEL SWITCH (CHIBI ↔ RACER) ═══════
+    let currentModel = 'chibi';
+    function toggleShipModel() {
+      playSFX('sfxClick');
+      const img = document.getElementById('playerShipImg');
+      if (currentModel === 'chibi') {
+        currentModel = 'racer';
+        img.src = 'assets/models/Isometric/craft_racer_SE.png';
+        showToast('🚀 PHI THUYỀN RACER', 'cyan');
+      } else {
+        currentModel = 'chibi';
+        img.src = 'asset_new/ship_chibi.png';
+        showToast('🧸 PHI THUYỀN CHIBI', 'gold');
+      }
+    }
+
+    // ═══════ PHASE SYSTEM ═══════
+    function setPhase(p) {
+      phase = p;
+      const ship = document.getElementById('playerShipContainer');
+      const indicator = document.getElementById('phaseIndicator');
+      const name = document.getElementById('phaseName');
+      const p1Label = document.getElementById('targetPha1Label');
+
+      if (ship) {
+        ship.className = 'player-ship-container phase-' + p;
+      }
+      if (indicator) {
+        indicator.className = 'phase-indicator ' + p;
+      }
+      if (name) {
+        name.textContent = p === 'cyan' ? 'PHA BĂNG' : 'PHA LỬA';
+      }
+      if (p1Label) {
+        if (p === 'cyan') {
+          p1Label.textContent = 'PHA 1 // MATCH';
+          p1Label.style.color = 'var(--cyan-bright)';
+          p1Label.style.borderColor = 'var(--cyan)';
+        } else {
+          p1Label.textContent = 'PHA 1 // MISMATCH';
+          p1Label.style.color = 'var(--orange-bright)';
+          p1Label.style.borderColor = 'var(--orange)';
+        }
+      }
+    }
+
+    function togglePhase() {
+      playSFX('sfxPhase');
+      setPhase(phase === 'cyan' ? 'orange' : 'cyan');
+      showToast(phase === 'cyan' ? '❄️ PHA BĂNG' : '🔥 PHA LỬA', phase);
+    }
+
+    // ═══════ LANE SHIFT (A / D HOẶC MŨI TÊN QUA LÀN) ═══════
+    function shiftLane(direction) {
+      const maxLane = lanePositions.length - 1;
+      let tiltAngle = 0;
+      if (direction === 'left' && currentLane > 0) {
+        currentLane--;
+        tiltAngle = -10;
+        playSFX('sfxClick');
+      } else if (direction === 'right' && currentLane < maxLane) {
+        currentLane++;
+        tiltAngle = 10;
+        playSFX('sfxClick');
+      }
+      const ship = document.getElementById('playerShipContainer');
+      if (ship) {
+        ship.style.left = lanePositions[currentLane];
+        ship.style.transform = `translateX(-50%) rotate(${tiltAngle}deg)`;
+        setTimeout(() => {
+          ship.style.transform = 'translateX(-50%) rotate(0deg)';
+        }, 220);
+      }
+    }
+
+    // ═══════ INTERACTIONS ═══════
+    function eatCrystal(color) {
+      if (color === phase) {
+        playSFX('sfxScore');
+        addScore(200);
+        showToast('+200 💎 ĐÚNG PHA!', 'gold');
+      } else {
+        playSFX('sfxCrash');
+        hitDamage();
+        showToast('⚠️ SAI PHA (-1 ❤️)', 'pink');
+      }
+    }
+
+    function eatRepairCore() {
+      playSFX('sfxScore');
+      if (hearts < 3) {
+        hearts++;
+        document.getElementById('heart3').classList.remove('lost');
+        showToast('+1 ❤️ HỒI MÁU!', 'cyan');
+      } else {
+        addScore(500);
+        showToast('+500 ĐIỂM THƯỞNG!', 'gold');
+      }
+    }
+
+    function addScore(pts) {
+      playSFX('sfxScore');
+      score += pts;
+      document.getElementById('scoreDisplay').textContent = score.toLocaleString('en-US', { minimumIntegerDigits: 2 });
+      showToast('+' + pts + ' PTS ⚡', 'gold');
+    }
+
+    function hitDamage() {
+      playSFX('sfxCrash');
+      const h3 = document.getElementById('heart3');
+      if (hearts === 3) {
+        h3.classList.add('lost');
+        hearts = 2;
+        showToast('−1 ❤️ VA CHẠM!', 'pink');
+      } else {
+        h3.classList.remove('lost');
+        hearts = 3;
+        showToast('+1 ❤️ HỒI PHỤC', 'cyan');
+      }
+    }
+
+    function triggerHyper() {
+      playSFX('sfxHyper');
+      const fill = document.getElementById('hyperFill');
+      const status = document.getElementById('hyperStatus');
+      hyperReady = !hyperReady;
+      if (hyperReady) {
+        fill.style.width = '100%';
+        fill.classList.add('full');
+        status.textContent = 'SẴN SÀNG!';
+        status.style.color = '#FFF';
+        showToast('⚡ HYPER-DRIVE!', 'gold');
+      } else {
+        fill.style.width = '78%';
+        fill.classList.remove('full');
+        status.textContent = '78%';
+        status.style.color = 'var(--gold-bright)';
+      }
+    }
+
+    // ═══════ TOAST ═══════
+    let toastTimeout;
+    function showToast(text, colorClass) {
+      const t = document.getElementById('toast');
+      clearTimeout(toastTimeout);
+      t.textContent = text;
+      t.className = 'toast ' + colorClass + ' show';
+      toastTimeout = setTimeout(() => { t.classList.remove('show'); }, 900);
+    }
+
+    // ═══════ SHOWCASE TABS ═══════
+    function switchAssetTab(tab) {
+      playSFX('sfxClick');
+      document.getElementById('gridNew').style.display = 'none';
+      document.getElementById('gridKenney').style.display = 'none';
+      document.getElementById('gridVfx').style.display = 'none';
+      document.querySelectorAll('.asset-tab').forEach(t => t.classList.remove('active'));
+
+      if (tab === 'new') { document.getElementById('gridNew').style.display = 'grid'; document.getElementById('tabNew').classList.add('active'); }
+      if (tab === 'kenney') { document.getElementById('gridKenney').style.display = 'grid'; document.getElementById('tabKenney').classList.add('active'); }
+      if (tab === 'vfx') { document.getElementById('gridVfx').style.display = 'grid'; document.getElementById('tabVfx').classList.add('active'); }
+    }
+
+    // ═══════ KEYBOARD CONTROLS ═══════
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePhase();
+      }
+      if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
+        shiftLane('left');
+      }
+      if (e.code === 'KeyD' || e.code === 'ArrowRight') {
+        shiftLane('right');
+      }
+      if (e.code === 'KeyL') {
+        toggleLaneMode();
+      }
+      if (e.code === 'KeyM') {
+        toggleShipModel();
+      }
+      if (e.code === 'KeyH') hitDamage();
+      if (e.code === 'KeyF') triggerHyper();
+    });
+
+    // Khởi tạo
+    goTo('start');
+  </script>
+
+</body>
+
+</html>

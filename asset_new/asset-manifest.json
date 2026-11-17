@@ -1,0 +1,81 @@
+{
+  "project": "Void Shift 3D",
+  "version": "1.0.0",
+  "style": "Cute Cartoon Stylized Sci-Fi",
+  "assets_directory": "asset_new",
+  "preview_sheet": "preview_sheet.png",
+  "assets": [
+    {
+      "id": "ship_chibi",
+      "file": "ship_chibi.png",
+      "role": "player_vehicle",
+      "type": "sprite_3d_billboard_or_ui",
+      "description": "Phi thuyền Chibi hoạt hình góc nhìn đuôi tàu, buồng lái tròn to, cánh mập mạp",
+      "dimensions": "512x512",
+      "alpha_required": true,
+      "source": "AI Image Generation via create-game-assets pipeline",
+      "license": "Project Internal (CC0 compatible)",
+      "technical_checks_passed": true
+    },
+    {
+      "id": "crystal_cyan",
+      "file": "crystal_cyan.png",
+      "role": "collectible_phase_cyan",
+      "type": "sprite_billboard",
+      "description": "Viên tinh thể pha Băng Cyan hoạt hình, phát sáng kẹo ngọt",
+      "dimensions": "512x512",
+      "alpha_required": true,
+      "source": "AI Image Generation via create-game-assets pipeline",
+      "license": "Project Internal (CC0 compatible)",
+      "technical_checks_passed": true
+    },
+    {
+      "id": "crystal_orange",
+      "file": "crystal_orange.png",
+      "role": "collectible_phase_orange",
+      "type": "sprite_billboard",
+      "description": "Viên tinh thể pha Lửa Cam hoạt hình, phát sáng ấm áp",
+      "dimensions": "512x512",
+      "alpha_required": true,
+      "source": "AI Image Generation via create-game-assets pipeline",
+      "license": "Project Internal (CC0 compatible)",
+      "technical_checks_passed": true
+    },
+    {
+      "id": "asteroid_cute",
+      "file": "asteroid_cute.png",
+      "role": "obstacle_hazard",
+      "type": "sprite_billboard",
+      "description": "Thiên thạch hoạt hình mập mạp với các miệng hố nhỏ ngộ nghĩnh",
+      "dimensions": "512x512",
+      "alpha_required": true,
+      "source": "Procedural Pillow Canvas via create-game-assets pipeline",
+      "license": "Project Internal (CC0 compatible)",
+      "technical_checks_passed": true
+    },
+    {
+      "id": "repair_core",
+      "file": "repair_core.png",
+      "role": "item_health_repair",
+      "type": "sprite_billboard",
+      "description": "Lõi sửa chữa / Hộp cứu thương mini xanh lục hồi máu",
+      "dimensions": "512x512",
+      "alpha_required": true,
+      "source": "Procedural Pillow Canvas via create-game-assets pipeline",
+      "license": "Project Internal (CC0 compatible)",
+      "technical_checks_passed": true
+    },
+    {
+      "id": "resonance_shard",
+      "file": "resonance_shard.png",
+      "role": "item_score_multiplier",
+      "type": "sprite_billboard",
+      "description": "Mảnh cộng hưởng x2 điểm ngôi sao đôi vàng lấp lánh",
+      "dimensions": "512x512",
+      "alpha_required": true,
+      "source": "Procedural Pillow Canvas via create-game-assets pipeline",
+      "license": "Project Internal (CC0 compatible)",
+      "technical_checks_passed": true
+    }
+  ]
+}
