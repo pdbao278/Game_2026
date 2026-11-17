@@ -780,33 +780,44 @@
       border-color: #FFFFFF;
       box-shadow: 0 0 16px var(--pink-glow);
     }
-      box-shadow: 0 0 20px var(--pink-glow);
+
+    /* Ẩn HUD và Controls khi đang ở Start Screen */
+    .hud-layer.hidden,
+    .nav-bar.hidden {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
     }
 
     /* ═══════ OVERLAY SCREENS (START & GAME OVER) ═══════ */
     .overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 100;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 200;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.4s ease, visibility 0.4s ease;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+      box-sizing: border-box;
     }
 
     .overlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
     }
 
-    /* Start Screen */
+    /* Start Screen - Phủ kín toàn màn hình, căn giữa hoàn hảo */
     .screen-start {
-      background: radial-gradient(ellipse 110% 85% at 50% 40%, rgba(30, 22, 65, 0.88) 0%, rgba(8, 6, 18, 0.98) 100%);
-      backdrop-filter: blur(12px);
-      padding: 40px;
+      background: radial-gradient(circle at 50% 45%, rgba(28, 20, 60, 0.96) 0%, rgba(8, 6, 18, 0.99) 100%);
+      backdrop-filter: blur(16px);
+      padding: 40px 24px;
       gap: 32px;
+      overflow-y: auto;
     }
 
     .logo-block {
@@ -937,12 +948,15 @@
       font-family: var(--font-display);
       font-size: 1.25rem;
       font-weight: 900;
-      padding: 16px 52px;
+      padding: 16px 56px;
       border: none;
       border-radius: var(--r-pill);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
+      align-self: center;
+      margin: 8px auto 0;
       gap: 14px;
       color: #080613;
       background: linear-gradient(135deg, var(--gold-bright), #FFAE00);
@@ -1213,8 +1227,8 @@
 
   </div><!-- /viewport -->
 
-  <!-- In-Game HUD Layer -->
-  <div class="hud-layer" id="hud-layer">
+  <!-- In-Game HUD Layer (Mặc định ẩn khi ở Trang chủ Start Screen) -->
+  <div class="hud-layer hidden" id="hud-layer">
     <div class="hud-top">
       <!-- Máu 3 HP -->
       <div class="hp-box">
@@ -1272,10 +1286,9 @@
   <!-- Thông báo nổi Toast -->
   <div class="toast" id="toast"></div>
 
-  <!-- Thanh điều khiển phía dưới -->
-  <nav class="nav-bar">
+  <!-- Thanh điều khiển nhanh nổi góc trên phải (Ẩn khi ở Start Screen) -->
+  <nav class="nav-bar hidden" id="nav-bar">
     <button class="nav-btn" id="btnToggleLane">🛣️ <span id="laneLabel">3 Làn (Phím L)</span></button>
-    <button class="nav-btn" id="btnToggleShip">🚀 Đổi Tàu (Phím M)</button>
     <button class="bgm-btn" id="btnBgm">🎵 <span id="bgmLabel">Nhạc Nền</span></button>
   </nav>
 

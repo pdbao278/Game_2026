@@ -45,7 +45,8 @@ export class UIManager {
     this.nearMissTimer = null;
     this.toastEl = document.getElementById('toast');
 
-    // Thanh điều hướng dưới đáy
+    // Thanh điều hướng nhanh nổi
+    this.navBar = document.getElementById('nav-bar') || document.querySelector('.nav-bar');
     this.btnToggleLane = document.getElementById('btnToggleLane');
     this.laneLabel = document.getElementById('laneLabel');
     this.btnToggleShip = document.getElementById('btnToggleShip');
@@ -258,11 +259,17 @@ export class UIManager {
   }
 
   /**
-   * Ẩn Start Menu khi bấm BẮT ĐẦU
+   * Ẩn Start Menu khi bấm BẮT ĐẦU và mở HUD in-game
    */
   hideStartScreen() {
     if (this.screenStart) {
       this.screenStart.classList.add('hidden');
+    }
+    if (this.hudLayer) {
+      this.hudLayer.classList.remove('hidden');
+    }
+    if (this.navBar) {
+      this.navBar.classList.remove('hidden');
     }
   }
 
@@ -270,6 +277,12 @@ export class UIManager {
    * Hiện Game Over
    */
   showGameOver(stats = {}) {
+    if (this.hudLayer) {
+      this.hudLayer.classList.add('hidden');
+    }
+    if (this.navBar) {
+      this.navBar.classList.add('hidden');
+    }
     if (this.screenGameOver) {
       if (this.goScoreNum) this.goScoreNum.textContent = (stats.score || 0).toLocaleString('en-US');
       if (this.goHighNum) this.goHighNum.textContent = (stats.highScore || 0).toLocaleString('en-US');
@@ -286,6 +299,12 @@ export class UIManager {
   hideGameOver() {
     if (this.screenGameOver) {
       this.screenGameOver.classList.add('hidden');
+    }
+    if (this.hudLayer) {
+      this.hudLayer.classList.remove('hidden');
+    }
+    if (this.navBar) {
+      this.navBar.classList.remove('hidden');
     }
   }
 }

@@ -124,11 +124,8 @@ export class VoidShiftGame {
       }
     });
 
-    // Lắng nghe phím tắt bổ sung (M, L)
+    // Lắng nghe phím tắt bổ sung (L)
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'KeyM') {
-        this.playerShip.toggleModel();
-      }
       if (e.code === 'KeyL') {
         globalEventBus.emit('request-lane-toggle');
       }
