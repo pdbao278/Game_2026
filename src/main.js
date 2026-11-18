@@ -43,6 +43,7 @@ export class VoidShiftGame {
 
     // 7. Giao diện HUD & Bộ nhận tín hiệu điều khiển
     this.uiManager = new UIManager(this.audioManager);
+    this.uiManager.updateStartHighScore(this.gameState.highScore);
     if (this.uiManager.laneLabel) {
       this.uiManager.laneLabel.textContent = '3 Làn (Phím L)';
     }
@@ -121,6 +122,7 @@ export class VoidShiftGame {
       }
       if (data.health <= 0) {
         this.gameState.triggerGameOver();
+        this.uiManager.updateStartHighScore(this.gameState.highScore);
       }
     });
 

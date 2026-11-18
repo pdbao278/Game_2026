@@ -16,6 +16,7 @@ export class UIManager {
     // Màn hình Start Menu
     this.screenStart = document.getElementById('screen-start');
     this.btnPlay = document.getElementById('btn-play');
+    this.startHighNum = document.getElementById('start-high-num');
 
     // Màn hình Game Over
     this.screenGameOver = document.getElementById('screen-gameover');
@@ -431,6 +432,16 @@ export class UIManager {
     }
     if (this.navBar) {
       this.navBar.classList.remove('hidden');
+    }
+  }
+
+  /**
+   * Cập nhật điểm kỷ lục trên Start Screen
+   * @param {number} score Điểm kỷ lục
+   */
+  updateStartHighScore(score) {
+    if (this.startHighNum) {
+      this.startHighNum.textContent = (score || 0).toLocaleString('en-US');
     }
   }
 }

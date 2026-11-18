@@ -90,16 +90,16 @@ Tài liệu theo dõi tiến độ chi tiết theo Kế hoạch Triển khai K�
 
 ## Phase 4: Hoàn Thiện, Trình Diễn & Đóng Gói (Polish & Packaging)
 
-- [ ] **Task 7: Tích Hợp Start Screen, Lưu Kỷ Lục & Đóng Gói Nộp Bài (Final Polish Slice)**
+- [x] **Task 7: Tích Hợp Start Screen, Lưu Kỷ Lục & Đóng Gói Nộp Bài (Final Polish Slice)**
   - *Mô tả:* Ghép nối màn hình Start Screen từ `preview_ui.html` (logo, hướng dẫn, nút BẮT ĐẦU kích hoạt âm thanh). Lưu điểm cao qua `localStorage`. Hỗ trợ cảm ứng/vuốt (Swipe/Tap). Cân chỉnh nhịp độ tăng tốc theo thời gian. Viết file `README.md`.
   - *Sự phụ thuộc:* Tasks 1–6
-  - *Trạng thái:* Chưa thực hiện
+  - *Trạng thái:* Đã hoàn thành (100% unit tests passed)
   - *Tiêu chí hoàn thành:*
-    - [ ] Màn hình Start Menu xuất hiện đúng chuẩn thiết kế đã duyệt.
-    - [ ] Nút BẮT ĐẦU chuyển mượt vào game và bật âm thanh.
-    - [ ] Điểm kỷ lục được lưu giữ qua `localStorage`.
-    - [ ] Tài liệu `README.md` hướng dẫn chạy 1-click cho ban giám khảo.
+    - [x] Màn hình Start Menu xuất hiện đúng chuẩn thiết kế đã duyệt.
+    - [x] Nút BẮT ĐẦU chuyển mượt vào game và bật âm thanh.
+    - [x] Điểm kỷ lục được lưu giữ qua `localStorage`.
+    - [x] Tài liệu `README.md` hướng dẫn chạy 1-click cho ban giám khảo.
 
-- [ ] **Checkpoint 4: Nghiệm Thu Hoàn Tất Dự Án**
-  - [ ] Đạt toàn bộ 7 tiêu chí thành công trong `SPEC_VOID_SHIFT_3D.md`.
-  - [ ] Ổn định 60 FPS, không lỗi bộ nhớ, sẵn sàng nộp bài cuộc thi IT Game Jam 2026.
+- [x] **Checkpoint 4: Nghiệm Thu Hoàn Tất Dự Án**
+  - [x] Đạt toàn bộ 7 tiêu chí thành công trong `SPEC_VOID_SHIFT_3D.md`.
+  - [x] Ổn định 60 FPS, không lỗi bộ nhớ, sẵn sàng nộp bài cuộc thi IT Game Jam 2026.
