@@ -54,9 +54,9 @@ Tài liệu theo dõi tiến độ chi tiết theo Kế hoạch Triển khai K�
     - [x] Đâm sai màu pha: mất $1$ HP như đâm thiên thạch.
     - [x] Điểm số tăng liên tục theo thời gian và hiển thị chuẩn trên HUD.
 
-- [ ] **Checkpoint 2: Kiểm tra Phase 2**
-  - [ ] Vòng lặp gameplay chính hoạt động trơn tru (Ăn tinh thể đúng màu, né thiên thạch, mất máu, Game Over, Chơi lại).
-  - [ ] Hiệu năng duy trì 60 FPS ổn định không giật lag.
+- [x] **Checkpoint 2: Kiểm tra Phase 2**
+  - [x] Vòng lặp gameplay chính hoạt động trơn tru (Ăn tinh thể đúng màu, né thiên thạch, mất máu, Game Over, Chơi lại).
+  - [x] Hiệu năng duy trì 60 FPS ổn định không giật lag.
 
 ---
 
