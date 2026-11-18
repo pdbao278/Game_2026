@@ -121,89 +121,7 @@
       100% { transform: translateY(75vh) scale(1.1); opacity: 0; }
     }
 
-    /* ─── HUD TELEMETRY 2 BÊN RÌA MÀN HÌNH ─── */
-    .telemetry-left {
-      position: absolute;
-      top: 50%;
-      left: 32px;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      z-index: 15;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.45);
-      pointer-events: none;
-      letter-spacing: 1px;
-    }
 
-    .telemetry-node {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .telemetry-line {
-      width: 24px;
-      height: 1.5px;
-      background: rgba(255, 255, 255, 0.25);
-    }
-
-    .telemetry-node.active-pitch {
-      color: var(--cyan);
-      text-shadow: 0 0 10px var(--cyan-glow);
-    }
-
-    .telemetry-node.active-pitch .telemetry-line {
-      width: 48px;
-      height: 2.5px;
-      background: var(--cyan);
-      box-shadow: 0 0 12px var(--cyan-glow);
-    }
-
-    .telemetry-right {
-      position: absolute;
-      top: 50%;
-      right: 32px;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 18px;
-      z-index: 15;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.45);
-      pointer-events: none;
-      letter-spacing: 1.5px;
-    }
-
-    .telemetry-right-node {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .telemetry-right-line {
-      width: 28px;
-      height: 1.5px;
-      background: rgba(255, 255, 255, 0.25);
-    }
-
-    .telemetry-right-node.active-prox {
-      color: var(--orange-bright);
-      text-shadow: 0 0 10px var(--orange-glow);
-    }
-
-    .telemetry-right-node.active-prox .telemetry-right-line {
-      width: 52px;
-      height: 2.5px;
-      background: var(--orange);
-      box-shadow: 0 0 12px var(--orange-glow);
-    }
 
     /* ─── ĐƯỜNG BAY 3D PHỐI CẢNH HỘI TỤ CHÍNH TÂM (VANISHING POINT TUNNEL) ─── */
     .tunnel-container {
@@ -1310,11 +1228,7 @@
         padding-bottom: env(safe-area-inset-bottom);
       }
 
-      /* Ẩn telemetry 2 bên rìa để mở rộng 100% tầm nhìn đường bay */
-      .telemetry-left,
-      .telemetry-right {
-        display: none !important;
-      }
+
 
       /* Tinh gọn HUD Layer */
       .hud-layer {
@@ -1710,20 +1624,7 @@
     <!-- Star particles lướt nhẹ mềm mại (Không bị vỡ khối vuông) -->
     <div class="star-field" id="starField"></div>
 
-    <!-- HUD Telemetry Rìa Màn Hình -->
-    <div class="telemetry-left">
-      <div class="telemetry-node active-pitch"><span class="telemetry-line"></span> PITCH +0.0°</div>
-      <div class="telemetry-node"><span class="telemetry-line"></span> YAW 00.00</div>
-      <div class="telemetry-node"><span class="telemetry-line"></span> L/ROLL DYN</div>
-      <div class="telemetry-node"><span class="telemetry-line"></span> SYS // STABLE</div>
-    </div>
 
-    <div class="telemetry-right">
-      <div class="telemetry-right-node active-prox">PROX LOCK <span class="telemetry-right-line"></span></div>
-      <div class="telemetry-right-node">FREQ 433.92 <span class="telemetry-right-line"></span></div>
-      <div class="telemetry-right-node">WARP V2.4 <span class="telemetry-right-line"></span></div>
-      <div class="telemetry-right-node">FPS // 60 <span class="telemetry-right-line"></span></div>
-    </div>
 
     <!-- ─── ĐƯỜNG BAY 3D PHỐI CẢNH HỘI TỤ CHÍNH TÂM (3 LÀN TRUNG TÂM GỌN GÀNG) ─── -->
     <div class="tunnel-container">
