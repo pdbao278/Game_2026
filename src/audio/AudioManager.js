@@ -1,17 +1,29 @@
 /**
  * AudioManager - Quản lý phát SFX và Nhạc nền (BGM)
+ * Hỗ trợ Web Audio an toàn với chính sách Autoplay và cơ chế Mute toàn diện
  */
 export class AudioManager {
   constructor() {
     this.bgmPlaying = false;
     this.muted = false;
 
-    this.sfxClick = document.getElementById('sfxClick');
-    this.sfxPhase = document.getElementById('sfxPhase');
-    this.sfxScore = document.getElementById('sfxScore');
-    this.sfxCrash = document.getElementById('sfxCrash');
-    this.sfxHyper = document.getElementById('sfxHyper');
-    this.bgm = document.getElementById('bgm');
+    if (typeof document !== 'undefined') {
+      this.sfxClick = document.getElementById('sfxClick');
+      this.sfxPhase = document.getElementById('sfxPhase');
+      this.sfxScore = document.getElementById('sfxScore');
+      this.sfxCrash = document.getElementById('sfxCrash');
+      this.sfxHyper = document.getElementById('sfxHyper');
+      this.sfxHeal = document.getElementById('sfxHeal');
+      this.bgm = document.getElementById('bgm');
+    } else {
+      this.sfxClick = null;
+      this.sfxPhase = null;
+      this.sfxScore = null;
+      this.sfxCrash = null;
+      this.sfxHyper = null;
+      this.sfxHeal = null;
+      this.bgm = null;
+    }
   }
 
   playSFX(name) {
@@ -23,6 +35,25 @@ export class AudioManager {
         audio.play().catch(() => {});
       }
     } catch (e) {}
+  }
+
+  /**
+   * Bật / Tắt chế độ tắt tiếng (Mute)
+   */
+  toggleMute() {
+    this.muted = !this.muted;
+    if (this.bgm) {
+      this.bgm.muted = this.muted;
+    }
+    return this.muted;
+  }
+
+  setMuted(muted) {
+    this.muted = !!muted;
+    if (this.bgm) {
+      this.bgm.muted = this.muted;
+    }
+    return this.muted;
   }
 
   toggleBGM() {

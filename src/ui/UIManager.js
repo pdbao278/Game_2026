@@ -52,6 +52,8 @@ export class UIManager {
     this.btnToggleShip = document.getElementById('btnToggleShip');
     this.btnBgm = document.getElementById('btnBgm');
     this.bgmLabel = document.getElementById('bgmLabel');
+    this.btnMute = document.getElementById('btnMute');
+    this.muteLabel = document.getElementById('muteLabel');
   }
 
   bindEvents() {
@@ -155,6 +157,22 @@ export class UIManager {
         } else {
           this.btnBgm.classList.remove('playing');
           if (this.bgmLabel) this.bgmLabel.textContent = 'Nhạc Nền';
+        }
+      });
+    }
+
+    // Bật / Tắt Tắt tiếng (Mute / Unmute)
+    if (this.btnMute && this.audioManager) {
+      this.btnMute.addEventListener('click', () => {
+        const isMuted = this.audioManager.toggleMute();
+        if (isMuted) {
+          this.btnMute.classList.add('muted');
+          if (this.muteLabel) this.muteLabel.textContent = 'Tắt Tiếng';
+          this.showToast('🔇 ĐÃ TẮT ÂM THANH', 'pink');
+        } else {
+          this.btnMute.classList.remove('muted');
+          if (this.muteLabel) this.muteLabel.textContent = 'Âm Thanh';
+          this.showToast('🔊 ĐÃ BẬT ÂM THANH', 'cyan');
         }
       });
     }

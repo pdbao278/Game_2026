@@ -72,15 +72,15 @@ Tài liệu theo dõi tiến độ chi tiết theo Kế hoạch Triển khai K�
     - [x] Trong Hyper-Drive: phá hủy thiên thạch khi chạm và tự hút tinh thể.
     - [x] Hết 6s trở về tốc độ bình thường và reset thanh năng lượng về 0%.
 
-- [ ] **Task 6: Vật Phẩm Phụ & Tích Hợp Hệ Thống Âm Thanh (Pickups & Audio Slice)**
+- [x] **Task 6: Vật Phẩm Phụ & Tích Hợp Hệ Thống Âm Thanh (Pickups & Audio Slice)**
   - *Mô tả:* Sinh Lõi Sửa Chữa (hồi +1 HP, tối đa 3) và Mảnh Cộng Hưởng (nhân đôi x2 điểm trong 8s). `AudioManager` nạp SFX (đổi pha, ăn điểm, mất máu, nổ) và BGM `laserpack_bgm.mp3` kèm nút bật/tắt âm thanh trên HUD.
   - *Sự phụ thuộc:* Task 4, Task 5
-  - *Trạng thái:* Chưa thực hiện
+  - *Trạng thái:* Đã hoàn thành (100% unit tests passed)
   - *Tiêu chí hoàn thành:*
-    - [ ] Nhặt Lõi Sửa Chữa hồi 1 HP.
-    - [ ] Nhặt Mảnh Cộng Hưởng nhân đôi điểm trong 8s với viền vàng kim trên HUD.
-    - [ ] Âm thanh SFX phát ăn khớp với mọi hành động tương tác.
-    - [ ] Nhạc nền BGM lặp êm ái, nút Mute/Unmute hoạt động chính xác.
+    - [x] Nhặt Lõi Sửa Chữa hồi 1 HP.
+    - [x] Nhặt Mảnh Cộng Hưởng nhân đôi điểm trong 8s với viền vàng kim trên HUD.
+    - [x] Âm thanh SFX phát ăn khớp với mọi hành động tương tác.
+    - [x] Nhạc nền BGM lặp êm ái, nút Mute/Unmute hoạt động chính xác.
 
 - [ ] **Checkpoint 3: Kiểm tra Phase 3**
   - [ ] Đầy đủ cơ chế Near-Miss, Hyper-Drive, vật phẩm phụ và âm thanh.

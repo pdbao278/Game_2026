@@ -122,6 +122,7 @@ export class CollisionSystem {
 
       case 'HEAL':
         if (player.heal) player.heal(result.amount || 1);
+        if (audioManager) audioManager.playSFX('sfxHeal');
         eventBus.emit('toast', { text: '+1 ❤️ HỒI MÁU!', type: 'cyan' });
         return { damageApplied: false, healed: true };
 
