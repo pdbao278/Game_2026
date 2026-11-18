@@ -82,9 +82,9 @@ Tài liệu theo dõi tiến độ chi tiết theo Kế hoạch Triển khai K�
     - [x] Âm thanh SFX phát ăn khớp với mọi hành động tương tác.
     - [x] Nhạc nền BGM lặp êm ái, nút Mute/Unmute hoạt động chính xác.
 
-- [ ] **Checkpoint 3: Kiểm tra Phase 3**
-  - [ ] Đầy đủ cơ chế Near-Miss, Hyper-Drive, vật phẩm phụ và âm thanh.
-  - [ ] Trải nghiệm chơi lôi cuốn, nhịp độ dồn dập.
+- [x] **Checkpoint 3: Kiểm tra Phase 3**
+  - [x] Đầy đủ cơ chế Near-Miss, Hyper-Drive, vật phẩm phụ và âm thanh.
+  - [x] Trải nghiệm chơi lôi cuốn, nhịp độ dồn dập.
 
 ---
 
