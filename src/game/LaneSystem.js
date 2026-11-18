@@ -16,13 +16,13 @@ export class LaneSystem {
     if (count === 3) {
       this.laneCount = 3;
       this.lanePositions = [-2.5, 0, 2.5];
-      this.lanePositionsPercent = ['32%', '50%', '68%'];
+      this.lanePositionsPercent = ['20%', '50%', '80%'];
       this.currentLaneIndex = 1; // Làn giữa (index 1)
     } else {
       // 5 làn
       this.laneCount = 5;
       this.lanePositions = [-4.0, -2.0, 0, 2.0, 4.0];
-      this.lanePositionsPercent = ['24%', '37%', '50%', '63%', '76%'];
+      this.lanePositionsPercent = ['12%', '31%', '50%', '69%', '88%'];
       this.currentLaneIndex = 2; // Làn giữa (index 2)
     }
   }

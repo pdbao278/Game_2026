@@ -34,12 +34,12 @@ export class VoidShiftGame {
     // 5. Phi thuyền người chơi
     this.playerShip = new PlayerShip(this.laneSystem, this.audioManager);
 
-    // 6. Quản lý chướng ngại vật & tinh thể (3 làn: 32%, 50%, 68%)
+    // 6. Quản lý chướng ngại vật & tinh thể (3 làn rộng rãi: 20%, 50%, 80%)
     this.obstacleManager = new ObstacleManager(
       document.getElementById('obstacleContainer'),
       this.audioManager
     );
-    this.obstacleManager.setLanePositions([32, 50, 68]);
+    this.obstacleManager.setLanePositions([20, 50, 80]);
 
     // 7. Giao diện HUD & Bộ nhận tín hiệu điều khiển
     this.uiManager = new UIManager(this.audioManager);
@@ -116,13 +116,13 @@ export class VoidShiftGame {
       this.playerShip.reset();
 
       if (newCount === 3) {
-        this.obstacleManager.setLanePositions([37, 50, 63]);
+        this.obstacleManager.setLanePositions([20, 50, 80]);
         if (this.uiManager.laneLabel) this.uiManager.laneLabel.textContent = '3 Làn (Phím L)';
-        this.uiManager.showToast('🛣️ CHẾ ĐỘ 3 LÀN (CƠ BẢN)', 'cyan');
+        this.uiManager.showToast('🛣️ CHẾ ĐỘ 3 LÀN (RỘNG RÃI)', 'cyan');
       } else {
-        this.obstacleManager.setLanePositions([24, 37, 50, 63, 76]);
+        this.obstacleManager.setLanePositions([12, 31, 50, 69, 88]);
         if (this.uiManager.laneLabel) this.uiManager.laneLabel.textContent = '5 Làn (Phím L)';
-        this.uiManager.showToast('🛣️ CHẾ ĐỘ 5 LÀN (RỘNG RÃI)', 'gold');
+        this.uiManager.showToast('🛣️ CHẾ ĐỘ 5 LÀN (TOÀN CẢNH)', 'gold');
       }
       if (this.audioManager) this.audioManager.playSFX('sfxClick');
     });

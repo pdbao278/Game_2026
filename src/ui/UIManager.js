@@ -408,8 +408,8 @@ export class UIManager {
     if (typeof document === 'undefined') return;
 
     const lanePositions = this.navBar && this.laneLabel?.textContent.includes('5 Làn') 
-      ? [24, 37, 50, 63, 76] 
-      : [32, 50, 68];
+      ? [12, 31, 50, 69, 88] 
+      : [20, 50, 80];
     const x = lanePositions[laneIndex] ?? 50;
     const y = 87; // Vị trí ngang hàng phi thuyền người chơi
 
