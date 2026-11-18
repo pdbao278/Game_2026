@@ -63,6 +63,7 @@ export class VoidShiftGame {
    */
   startGame() {
     this.uiManager.hideStartScreen();
+    this.uiManager.hidePause();
     this.gameState.start();
     this.playerShip.reset();
     this.obstacleManager.clearAll();
@@ -81,9 +82,24 @@ export class VoidShiftGame {
     // Chơi lại khi bấm nút "CHƠI LẠI"
     globalEventBus.on('restart-game', () => {
       this.uiManager.hideGameOver();
+      this.uiManager.hidePause();
       this.gameState.start();
       this.playerShip.reset();
       this.obstacleManager.clearAll();
+    });
+
+    // Tạm dừng / Tiếp tục game (Phím P, Esc hoặc nút Pause trên UI)
+    globalEventBus.on('request-pause-toggle', () => {
+      if (this.gameState.status === 'PLAYING' || this.gameState.status === 'PAUSED') {
+        const isPaused = this.gameState.togglePause();
+        if (isPaused) {
+          this.uiManager.showToast('⏸️ TRÒ CHƠI TẠM DỪNG', 'cyan');
+          if (this.audioManager) this.audioManager.pauseBGM();
+        } else {
+          this.uiManager.showToast('▶ TIẾP TỤC HÀNH TRÌNH', 'gold');
+          if (this.audioManager) this.audioManager.resumeBGM();
+        }
+      }
     });
 
     // Đổi pha từ click trên HUD
@@ -96,6 +112,7 @@ export class VoidShiftGame {
       const currentCount = this.laneSystem.laneCount;
       const newCount = currentCount === 5 ? 3 : 5;
       this.laneSystem.setMode(newCount);
+      this.uiManager.setLaneGrid(newCount);
       this.playerShip.reset();
 
       if (newCount === 3) {
@@ -142,6 +159,14 @@ export class VoidShiftGame {
 
     const deltaTime = Math.min((currentTime - this.lastTime) / 1000, 0.1);
     this.lastTime = currentTime;
+
+    // Khi game đang Tạm Dừng, không cập nhật logic chuyển động và vật cản
+    if (this.gameState.status === 'PAUSED') {
+      if (this.sceneManager) {
+        this.sceneManager.render();
+      }
+      return;
+    }
 
     // 1. Cập nhật GameState
     this.gameState.update(deltaTime);

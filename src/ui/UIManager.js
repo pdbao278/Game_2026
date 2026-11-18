@@ -46,8 +46,20 @@ export class UIManager {
     this.nearMissTimer = null;
     this.toastEl = document.getElementById('toast');
 
+    // Lưới tia SVG 3 làn và 5 làn
+    this.grid3Lanes = document.getElementById('grid3Lanes');
+    this.grid5Lanes = document.getElementById('grid5Lanes');
+
+    // Màn hình Tạm dừng & Nút Dừng / Tiếp tục
+    this.screenPause = document.getElementById('screen-pause');
+    this.btnResume = document.getElementById('btn-resume');
+    this.btnPauseRestart = document.getElementById('btn-pause-restart');
+
     // Thanh điều hướng nhanh nổi
     this.navBar = document.getElementById('nav-bar') || document.querySelector('.nav-bar');
+    this.btnPause = document.getElementById('btnPause');
+    this.pauseLabel = document.getElementById('pauseLabel');
+    this.btnQuickRestart = document.getElementById('btnQuickRestart');
     this.btnToggleLane = document.getElementById('btnToggleLane');
     this.laneLabel = document.getElementById('laneLabel');
     this.btnToggleShip = document.getElementById('btnToggleShip');
@@ -109,6 +121,14 @@ export class UIManager {
       this.showGameOver(data);
     });
 
+    globalEventBus.on('game-paused', () => {
+      this.showPause();
+    });
+
+    globalEventBus.on('game-resumed', () => {
+      this.hidePause();
+    });
+
     // 2. Tương tác nút trên giao diện
     if (this.btnPlay) {
       this.btnPlay.addEventListener('click', () => {
@@ -123,6 +143,44 @@ export class UIManager {
     if (this.btnRestart) {
       this.btnRestart.addEventListener('click', () => {
         if (this.audioManager) this.audioManager.playSFX('sfxClick');
+        this.hideGameOver();
+        this.hidePause();
+        globalEventBus.emit('restart-game');
+      });
+    }
+
+    // Nút Dừng Game (Pause Toggle)
+    if (this.btnPause) {
+      this.btnPause.addEventListener('click', () => {
+        if (this.audioManager) this.audioManager.playSFX('sfxClick');
+        globalEventBus.emit('request-pause-toggle');
+      });
+    }
+
+    // Nút Tiếp tục trên màn hình Pause
+    if (this.btnResume) {
+      this.btnResume.addEventListener('click', () => {
+        if (this.audioManager) this.audioManager.playSFX('sfxClick');
+        globalEventBus.emit('request-pause-toggle');
+      });
+    }
+
+    // Nút Chơi Lại nhanh trên thanh Navbar
+    if (this.btnQuickRestart) {
+      this.btnQuickRestart.addEventListener('click', () => {
+        if (this.audioManager) this.audioManager.playSFX('sfxClick');
+        this.hidePause();
+        this.hideGameOver();
+        globalEventBus.emit('restart-game');
+      });
+    }
+
+    // Nút Chơi lại từ màn hình Pause
+    if (this.btnPauseRestart) {
+      this.btnPauseRestart.addEventListener('click', () => {
+        if (this.audioManager) this.audioManager.playSFX('sfxClick');
+        this.hidePause();
+        this.hideGameOver();
         globalEventBus.emit('restart-game');
       });
     }
@@ -289,15 +347,15 @@ export class UIManager {
 
     this.nearMissToast.style.display = 'flex';
     this.nearMissToast.style.opacity = '1';
-    this.nearMissToast.style.transform = 'translate(-50%, -50%) scale(1.05)';
+    this.nearMissToast.style.transform = 'translateX(-50%) scale(1)';
 
     this.nearMissTimer = setTimeout(() => {
       this.nearMissToast.style.opacity = '0';
-      this.nearMissToast.style.transform = 'translate(-50%, -50%) scale(0.95)';
+      this.nearMissToast.style.transform = 'translateX(-50%) scale(0.9)';
       setTimeout(() => {
         this.nearMissToast.style.display = 'none';
-      }, 300);
-    }, 1200);
+      }, 250);
+    }, 1100);
   }
 
   /**
@@ -442,6 +500,50 @@ export class UIManager {
   updateStartHighScore(score) {
     if (this.startHighNum) {
       this.startHighNum.textContent = (score || 0).toLocaleString('en-US');
+    }
+  }
+
+  /**
+   * Chuyển đổi hiển thị lưới SVG 3 làn / 5 làn
+   * @param {number} laneCount Số lượng làn (3 hoặc 5)
+   */
+  setLaneGrid(laneCount = 3) {
+    if (laneCount === 5) {
+      if (this.grid3Lanes) this.grid3Lanes.classList.add('hidden');
+      if (this.grid5Lanes) this.grid5Lanes.classList.remove('hidden');
+    } else {
+      if (this.grid3Lanes) this.grid3Lanes.classList.remove('hidden');
+      if (this.grid5Lanes) this.grid5Lanes.classList.add('hidden');
+    }
+  }
+
+  /**
+   * Hiển thị màn hình Tạm Dừng (Pause)
+   */
+  showPause() {
+    if (this.screenPause) {
+      this.screenPause.classList.remove('hidden');
+    }
+    if (this.pauseLabel) {
+      this.pauseLabel.textContent = 'Tiếp Tục (P)';
+    }
+    if (this.btnPause) {
+      this.btnPause.classList.add('active');
+    }
+  }
+
+  /**
+   * Ẩn màn hình Tạm Dừng (Resume)
+   */
+  hidePause() {
+    if (this.screenPause) {
+      this.screenPause.classList.add('hidden');
+    }
+    if (this.pauseLabel) {
+      this.pauseLabel.textContent = 'Dừng (P)';
+    }
+    if (this.btnPause) {
+      this.btnPause.classList.remove('active');
     }
   }
 }

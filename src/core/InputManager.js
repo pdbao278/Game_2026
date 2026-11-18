@@ -75,6 +75,12 @@ export class InputManager {
         this.playerShip.laneSystem.setMode(currentCount === 5 ? 3 : 5);
         this.playerShip.state.targetX = this.playerShip.laneSystem.getTargetX();
         break;
+
+      case 'KeyP':
+      case 'Escape':
+        e.preventDefault();
+        globalEventBus.emit('request-pause-toggle');
+        break;
     }
   }
 

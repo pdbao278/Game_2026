@@ -75,6 +75,33 @@ export class GameState {
     globalEventBus.emit('hyper-updated', { percent: this.hyperPercent, isHyperActive: false });
   }
 
+  pause() {
+    if (this.status === 'PLAYING') {
+      this.status = 'PAUSED';
+      globalEventBus.emit('game-paused');
+      return true;
+    }
+    return false;
+  }
+
+  resume() {
+    if (this.status === 'PAUSED') {
+      this.status = 'PLAYING';
+      globalEventBus.emit('game-resumed');
+      return true;
+    }
+    return false;
+  }
+
+  togglePause() {
+    if (this.status === 'PLAYING') {
+      return this.pause();
+    } else if (this.status === 'PAUSED') {
+      return this.resume();
+    }
+    return false;
+  }
+
   addCrystalScore() {
     const pts = 100 * this.scoreMultiplier;
     this.score += pts;

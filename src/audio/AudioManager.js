@@ -83,4 +83,16 @@ export class AudioManager {
       this.bgmPlaying = false;
     }
   }
+
+  pauseBGM() {
+    if (this.bgm && this.bgmPlaying) {
+      this.bgm.pause();
+    }
+  }
+
+  resumeBGM() {
+    if (this.bgm && this.bgmPlaying) {
+      this.bgm.play().catch(() => {});
+    }
+  }
 }

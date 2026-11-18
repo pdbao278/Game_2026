@@ -663,33 +663,33 @@
 
     /* Popup toast Né Sát NEAR-MISS */
     .near-miss-popup {
-      position: absolute;
-      top: 55%;
+      position: fixed;
+      top: 114px;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%) scale(0.9);
       background: rgba(18, 15, 32, 0.94);
       border: 1.5px solid var(--border-bright);
-      border-left: 4px solid var(--cyan);
-      border-radius: var(--r-sm);
-      padding: 12px 24px;
+      border-left: 3.5px solid var(--cyan);
+      border-radius: var(--r-pill);
+      padding: 6px 18px;
       display: none;
       align-items: center;
-      gap: 14px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 245, 255, 0.35);
+      gap: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 245, 255, 0.3);
       pointer-events: none;
-      z-index: 60;
-      transition: all 0.3s ease;
+      z-index: 9998;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
     }
 
     .near-miss-icon {
       color: var(--cyan);
-      font-size: 1.4rem;
-      filter: drop-shadow(0 0 8px var(--cyan-glow));
+      font-size: 1.1rem;
+      filter: drop-shadow(0 0 6px var(--cyan-glow));
     }
 
     .near-miss-pts {
       font-family: var(--font-mono);
-      font-size: 1.1rem;
+      font-size: 0.85rem;
       font-weight: 800;
       color: #FFFFFF;
       letter-spacing: 1px;
@@ -697,10 +697,10 @@
 
     .near-miss-sub {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 700;
-      color: rgba(255, 255, 255, 0.6);
-      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.65);
+      letter-spacing: 1px;
     }
 
     /* ═══════ FLOATING QUICK CONTROLS (GÓC TRÊN BÊN PHẢI DƯỚI BẢNG ĐIỂM) ═══════ */
@@ -1088,55 +1088,121 @@
       box-shadow: 0 3px 0 #006B73;
     }
 
-    /* Toast popup thông báo */
+    /* Toast popup thông báo (Đã thu gọn kích thước và dời lên phía trên, không che tầm nhìn) */
     .toast {
       position: fixed;
-      top: 45%;
+      top: 76px;
       left: 50%;
-      transform: translate(-50%, -50%) scale(0.7);
+      transform: translate(-50%, -6px) scale(0.85);
       font-family: var(--font-display);
-      font-size: 1.8rem;
-      font-weight: 900;
+      font-size: 0.92rem;
+      font-weight: 800;
       pointer-events: none;
       z-index: 9999;
       opacity: 0;
-      padding: 12px 32px;
+      padding: 6px 20px;
       border-radius: var(--r-pill);
       background: rgba(14, 10, 32, 0.94);
-      border: 2px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
-      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-      letter-spacing: 1.5px;
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      letter-spacing: 1px;
+      white-space: nowrap;
     }
 
     .toast.show {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
+      transform: translate(-50%, 0) scale(1);
     }
 
     .toast.gold {
       color: var(--gold-bright);
       border-color: var(--gold);
-      box-shadow: 0 0 36px var(--gold-glow);
+      box-shadow: 0 0 24px var(--gold-glow);
     }
 
     .toast.pink {
       color: #FFF;
       border-color: var(--pink);
-      box-shadow: 0 0 36px var(--pink-glow);
-      text-shadow: 0 0 16px var(--pink-glow);
+      box-shadow: 0 0 24px var(--pink-glow);
+      text-shadow: 0 0 12px var(--pink-glow);
     }
 
     .toast.cyan {
       color: var(--cyan-bright);
       border-color: var(--cyan);
-      box-shadow: 0 0 36px var(--cyan-glow);
+      box-shadow: 0 0 24px var(--cyan-glow);
     }
 
     .toast.orange {
       color: var(--orange-bright);
       border-color: var(--orange);
-      box-shadow: 0 0 36px var(--orange-glow);
+      box-shadow: 0 0 24px var(--orange-glow);
+    }
+
+    /* ═══════ PAUSE SCREEN OVERLAY ═══════ */
+    .screen-pause {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      background: radial-gradient(circle at 50% 50%, rgba(14, 10, 32, 0.88) 0%, rgba(8, 6, 18, 0.96) 100%);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease;
+    }
+
+    .screen-pause.hidden {
+      display: none !important;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .pause-card {
+      background: rgba(22, 16, 48, 0.92);
+      border: 2px solid var(--border-bright);
+      border-radius: var(--r-lg);
+      padding: 36px 44px;
+      text-align: center;
+      max-width: 440px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 245, 255, 0.2);
+      animation: popCard 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .pause-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .pause-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 16px rgba(0, 245, 255, 0.5);
+    }
+
+    .pause-desc {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.65);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .pause-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     /* Damage Flash Overlay khi bị va chạm */
@@ -1265,7 +1331,7 @@
           style="width:96px; height:auto; opacity:0.85; filter:drop-shadow(0 0 16px var(--cyan-glow));">
       </div>
 
-      <!-- Lưới tia phân làn và vạch ngang phối cảnh chiếu từ chân trời (3 làn thanh thoát) -->
+      <!-- Lưới tia phân làn và vạch ngang phối cảnh chiếu từ chân trời (Hỗ trợ chuyển đổi 3 làn & 5 làn) -->
       <svg class="perspective-grid-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
         <defs>
           <linearGradient id="rayGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -1275,22 +1341,50 @@
           </linearGradient>
         </defs>
 
-        <!-- Đúng 4 tia phân định 3 LÀN ĐƯỜNG Ở GIỮA (Làn 1: 32%, Làn 2: 50%, Làn 3: 68%) -->
-        <!-- Biên trái Làn 1 -->
-        <line x1="500" y1="250" x2="230" y2="1000" stroke="url(#rayGrad)" stroke-width="3" opacity="0.85" />
-        <!-- Phân cách Làn 1 & Làn 2 -->
-        <line x1="500" y1="250" x2="410" y2="1000" stroke="url(#rayGrad)" stroke-width="1.8" opacity="0.6" />
-        <!-- Phân cách Làn 2 & Làn 3 -->
-        <line x1="500" y1="250" x2="590" y2="1000" stroke="url(#rayGrad)" stroke-width="1.8" opacity="0.6" />
-        <!-- Biên phải Làn 3 -->
-        <line x1="500" y1="250" x2="770" y2="1000" stroke="url(#rayGrad)" stroke-width="3" opacity="0.85" />
+        <!-- 3 LÀN ĐƯỜNG TRUNG TÂM (Mặc định) -->
+        <g id="grid3Lanes">
+          <!-- Đúng 4 tia phân định 3 LÀN ĐƯỜNG Ở GIỮA (Làn 1: 32%, Làn 2: 50%, Làn 3: 68%) -->
+          <!-- Biên trái Làn 1 -->
+          <line x1="500" y1="250" x2="230" y2="1000" stroke="url(#rayGrad)" stroke-width="3" opacity="0.85" />
+          <!-- Phân cách Làn 1 & Làn 2 -->
+          <line x1="500" y1="250" x2="410" y2="1000" stroke="url(#rayGrad)" stroke-width="1.8" opacity="0.6" />
+          <!-- Phân cách Làn 2 & Làn 3 -->
+          <line x1="500" y1="250" x2="590" y2="1000" stroke="url(#rayGrad)" stroke-width="1.8" opacity="0.6" />
+          <!-- Biên phải Làn 3 -->
+          <line x1="500" y1="250" x2="770" y2="1000" stroke="url(#rayGrad)" stroke-width="3" opacity="0.85" />
 
-        <!-- Các vạch ngang nhẹ nhàng lướt dọc theo 3 làn đường -->
-        <g class="lane-bars-group" stroke="#00F5FF">
-          <line x1="435" y1="380" x2="565" y2="380" stroke-opacity="0.2" stroke-width="1.5" />
-          <line x1="375" y1="540" x2="625" y2="540" stroke-opacity="0.3" stroke-width="2" />
-          <line x1="300" y1="740" x2="700" y2="740" stroke-opacity="0.45" stroke-width="2.5" />
-          <line x1="230" y1="980" x2="770" y2="980" stroke-opacity="0.6" stroke-width="3" />
+          <!-- Các vạch ngang nhẹ nhàng lướt dọc theo 3 làn đường -->
+          <g class="lane-bars-group" stroke="#00F5FF">
+            <line x1="435" y1="380" x2="565" y2="380" stroke-opacity="0.2" stroke-width="1.5" />
+            <line x1="375" y1="540" x2="625" y2="540" stroke-opacity="0.3" stroke-width="2" />
+            <line x1="300" y1="740" x2="700" y2="740" stroke-opacity="0.45" stroke-width="2.5" />
+            <line x1="230" y1="980" x2="770" y2="980" stroke-opacity="0.6" stroke-width="3" />
+          </g>
+        </g>
+
+        <!-- 5 LÀN ĐƯỜNG RỘNG (Mở rộng thêm 2 làn 2 bên: 6 tia phân cách) -->
+        <g id="grid5Lanes" class="hidden">
+          <!-- 6 tia phân định 5 làn: [24, 37, 50, 63, 76] -->
+          <!-- Biên ngoài trái (Làn 0) -->
+          <line x1="500" y1="250" x2="175" y2="1000" stroke="url(#rayGrad)" stroke-width="3.2" opacity="0.9" />
+          <!-- Phân cách Làn 0 & 1 -->
+          <line x1="500" y1="250" x2="305" y2="1000" stroke="url(#rayGrad)" stroke-width="2" opacity="0.65" />
+          <!-- Phân cách Làn 1 & 2 -->
+          <line x1="500" y1="250" x2="435" y2="1000" stroke="url(#rayGrad)" stroke-width="1.8" opacity="0.55" />
+          <!-- Phân cách Làn 2 & 3 -->
+          <line x1="500" y1="250" x2="565" y2="1000" stroke="url(#rayGrad)" stroke-width="1.8" opacity="0.55" />
+          <!-- Phân cách Làn 3 & 4 -->
+          <line x1="500" y1="250" x2="695" y2="1000" stroke="url(#rayGrad)" stroke-width="2" opacity="0.65" />
+          <!-- Biên ngoài phải (Làn 4) -->
+          <line x1="500" y1="250" x2="825" y2="1000" stroke="url(#rayGrad)" stroke-width="3.2" opacity="0.9" />
+
+          <!-- Các vạch ngang 5 làn mở rộng sang 2 bên -->
+          <g class="lane-bars-group" stroke="#00F5FF">
+            <line x1="410" y1="380" x2="590" y2="380" stroke-opacity="0.22" stroke-width="1.5" />
+            <line x1="330" y1="540" x2="670" y2="540" stroke-opacity="0.32" stroke-width="2" />
+            <line x1="240" y1="740" x2="760" y2="740" stroke-opacity="0.48" stroke-width="2.5" />
+            <line x1="175" y1="980" x2="825" y2="980" stroke-opacity="0.65" stroke-width="3.2" />
+          </g>
         </g>
       </svg>
     </div>
@@ -1385,10 +1479,33 @@
 
   <!-- Thanh điều khiển nhanh nổi góc trên phải (Ẩn khi ở Start Screen) -->
   <nav class="nav-bar hidden" id="nav-bar">
+    <button class="nav-btn" id="btnPause" title="Tạm dừng hoặc tiếp tục game (Phím P hoặc Esc)">⏸️ <span id="pauseLabel">Dừng (P)</span></button>
+    <button class="nav-btn" id="btnQuickRestart" title="Chơi lại ván mới">🔄 <span>Chơi Lại</span></button>
     <button class="nav-btn" id="btnToggleLane">🛣️ <span id="laneLabel">3 Làn (Phím L)</span></button>
     <button class="bgm-btn" id="btnBgm">🎵 <span id="bgmLabel">Nhạc Nền</span></button>
     <button class="nav-btn" id="btnMute">🔊 <span id="muteLabel">Âm Thanh</span></button>
   </nav>
+
+  <!-- Pause Screen Overlay -->
+  <div class="overlay screen-pause hidden" id="screen-pause">
+    <div class="pause-card">
+      <div class="pause-badge">✦ TRẠNG THÁI TẠM DỪNG ✦</div>
+      <h2 class="pause-title">TRÒ CHƠI ĐÃ DỪNG</h2>
+      <p class="pause-desc">Hệ thống động cơ phi thuyền đang chờ bạn quay lại đường đua.</p>
+
+      <div class="pause-actions">
+        <button class="btn-play interactive-ui" id="btn-resume">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <path fill="currentColor" d="M8 5v14l11-7z"/>
+          </svg>
+          TIẾP TỤC CHƠI (P)
+        </button>
+        <button class="btn-restart interactive-ui" id="btn-pause-restart">
+          🔄 CHƠI LẠI TỪ ĐẦU
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Start Screen Overlay -->
   <div class="overlay screen-start" id="screen-start">
