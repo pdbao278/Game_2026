@@ -1153,6 +1153,34 @@
     .damage-flash-overlay.active {
       opacity: 1;
     }
+
+    /* Hiệu ứng hạt lóe sáng khi ăn tinh thể năng lượng (Particle Burst) */
+    .crystal-burst {
+      position: absolute;
+      pointer-events: none;
+      z-index: 55;
+      width: 0;
+      height: 0;
+      transform: translate(-50%, -50%);
+    }
+    .crystal-spark {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sparkBurst 0.55s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    }
+    @keyframes sparkBurst {
+      0% {
+        transform: translate(0, 0) scale(1.4);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--dx), var(--dy)) scale(0.2);
+        opacity: 0;
+      }
+    }
   </style>
 
   <!-- Importmap cho Three.js và GLTFLoader -->

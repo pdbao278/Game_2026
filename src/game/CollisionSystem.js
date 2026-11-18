@@ -96,14 +96,20 @@ export class CollisionSystem {
     );
 
     switch (result.type) {
-      case 'COLLECT_CRYSTAL':
+      case 'COLLECT_CRYSTAL': {
         if (gameState) gameState.addCrystalScore();
         if (audioManager) audioManager.playSFX('sfxScore');
+        const crystalColor = playerPhase === 'CYAN' ? '#00F5FF' : '#FF7700';
         eventBus.emit('toast', {
           text: '+100 💎 ĐÚNG PHA!',
           type: playerPhase === 'CYAN' ? 'cyan' : 'orange'
         });
+        eventBus.emit('crystal-collected', {
+          lane: obstacle.lane,
+          color: crystalColor
+        });
         return { damageApplied: false, collected: true };
+      }
 
       case 'DAMAGE': {
         const damageSuccess = player.takeDamage ? player.takeDamage(result.amount || 1) : false;

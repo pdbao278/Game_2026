@@ -66,6 +66,10 @@ export class UIManager {
       this.triggerDamageFlash();
     });
 
+    globalEventBus.on('crystal-collected', (data) => {
+      this.createParticleBurst(data.lane, data.color);
+    });
+
     globalEventBus.on('player-heal', (data) => {
       this.updateHearts(data.health);
     });
@@ -270,6 +274,50 @@ export class UIManager {
         flashEl.classList.remove('active');
       }, 250);
     }
+  }
+
+  /**
+   * Tạo hiệu ứng hạt nổ sáng (Particle Burst) khi người chơi ăn đúng pha tinh thể
+   * @param {number} laneIndex Chỉ số làn
+   * @param {string} color Mã màu phát sáng
+   */
+  createParticleBurst(laneIndex = 1, color = '#00F5FF') {
+    if (typeof document === 'undefined') return;
+
+    const lanePositions = this.navBar && this.laneLabel?.textContent.includes('5 Làn') 
+      ? [24, 37, 50, 63, 76] 
+      : [32, 50, 68];
+    const x = lanePositions[laneIndex] ?? 50;
+    const y = 87; // Vị trí ngang hàng phi thuyền người chơi
+
+    const burst = document.createElement('div');
+    burst.className = 'crystal-burst';
+    burst.style.left = `${x}%`;
+    burst.style.top = `${y}%`;
+
+    const sparkCount = 12;
+    for (let i = 0; i < sparkCount; i++) {
+      const angle = (i / sparkCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+      const distance = 25 + Math.random() * 45;
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance;
+
+      const spark = document.createElement('div');
+      spark.className = 'crystal-spark';
+      spark.style.backgroundColor = color;
+      spark.style.boxShadow = `0 0 12px ${color}`;
+      spark.style.setProperty('--dx', `${dx}px`);
+      spark.style.setProperty('--dy', `${dy}px`);
+      burst.appendChild(spark);
+    }
+
+    const container = document.getElementById('obstacleContainer') || document.body;
+    container.appendChild(burst);
+    setTimeout(() => {
+      if (burst.parentElement) {
+        burst.parentElement.removeChild(burst);
+      }
+    }, 600);
   }
 
   /**

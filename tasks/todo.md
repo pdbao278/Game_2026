@@ -44,15 +44,15 @@ Tài liệu theo dõi tiến độ chi tiết theo Kế hoạch Triển khai K�
     - [x] Hết 3 HP hiện màn hình Game Over.
     - [x] Nút Chơi lại reset sạch sẽ về 3 HP và bắt đầu ván mới ngay.
 
-- [ ] **Task 4: Tinh Thể Năng Lượng & Hệ Thống Điểm Số (Energy Crystals & Scoring Slice)**
+- [x] **Task 4: Tinh Thể Năng Lượng & Hệ Thống Điểm Số (Energy Crystals & Scoring Slice)**
   - *Mô tả:* Sinh Tinh thể Băng (Cyan) và Tinh thể Lửa (Cam). Ăn cùng pha: $+100$ điểm, $+8\%$ thanh Hyper-Drive; va chạm khác pha: mất $1$ HP. Điểm tăng theo thời gian sinh tồn.
   - *Sự phụ thuộc:* Task 2, Task 3
-  - *Trạng thái:* Chưa thực hiện
+  - *Trạng thái:* Đã hoàn thành (100% unit tests passed)
   - *Tiêu chí hoàn thành:*
-    - [ ] Tinh thể 2 màu Cyan/Cam xuất hiện xen kẽ với thiên thạch.
-    - [ ] Đâm đúng màu pha: $+100$ điểm, nạp $+8\%$ Hyper-Drive, hiệu ứng hạt nổ sáng.
-    - [ ] Đâm sai màu pha: mất $1$ HP như đâm thiên thạch.
-    - [ ] Điểm số tăng liên tục theo thời gian và hiển thị chuẩn trên HUD.
+    - [x] Tinh thể 2 màu Cyan/Cam xuất hiện xen kẽ với thiên thạch.
+    - [x] Đâm đúng màu pha: $+100$ điểm, nạp $+8\%$ Hyper-Drive, hiệu ứng hạt nổ sáng.
+    - [x] Đâm sai màu pha: mất $1$ HP như đâm thiên thạch.
+    - [x] Điểm số tăng liên tục theo thời gian và hiển thị chuẩn trên HUD.
 
 - [ ] **Checkpoint 2: Kiểm tra Phase 2**
   - [ ] Vòng lặp gameplay chính hoạt động trơn tru (Ăn tinh thể đúng màu, né thiên thạch, mất máu, Game Over, Chơi lại).
