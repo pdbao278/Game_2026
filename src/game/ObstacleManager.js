@@ -1,18 +1,22 @@
 import { ObstacleLogic } from './ObstacleLogic.js';
+import { CollisionSystem } from './CollisionSystem.js';
 import { globalEventBus } from '../core/EventBus.js';
 
 /**
- * ObstacleManager - Quản lý sinh và di chuyển chướng ngại vật & tinh thể trên 5 làn đường
+ * ObstacleManager - Quản lý sinh và di chuyển chướng ngại vật & tinh thể trên các làn đường
+ * Sử dụng Object Pooling để tái chế vật thể và phần tử DOM, hạn chế cấp phát bộ nhớ liên tục
  */
 export class ObstacleManager {
   constructor(containerElement, audioManager) {
-    this.container = containerElement || document.getElementById('obstacleContainer');
+    this.container = containerElement || (typeof document !== 'undefined' ? document.getElementById('obstacleContainer') : null);
     this.audioManager = audioManager;
     this.obstacles = [];
+    this.pool = []; // Object pool để tái sử dụng
     this.spawnTimer = 0;
     this.spawnInterval = 1.35; // Khoảng cách sinh vật thể (giây)
     this.lanePositions = [32, 50, 68];
     this.nextId = 0;
+    this.collisionSystem = new CollisionSystem(0.86, 0.98, 0.75);
   }
 
   setLanePositions(positions) {
@@ -21,6 +25,7 @@ export class ObstacleManager {
 
   /**
    * Sinh ngẫu nhiên một vật thể mới ở đầu đường bay (chân trời)
+   * Tận dụng pool nếu có sẵn
    */
   spawn(laneCount = 3) {
     const lane = Math.floor(Math.random() * laneCount);
@@ -64,31 +69,49 @@ export class ObstacleManager {
       glowColor = 'var(--gold-glow)';
     }
 
-    // Tạo phần tử DOM
-    const el = document.createElement('div');
-    el.className = 'dynamic-obstacle';
-    el.innerHTML = `
-      <div class="target-box" style="border-color:${borderColor}; box-shadow:0 0 16px ${glowColor};">
-        <img src="${imgSrc}" alt="${type}">
-      </div>
-      <div class="target-label" style="color:${borderColor};">${label}</div>
-    `;
+    let obstacleObj = this.pool.pop();
 
-    if (this.container) {
-      this.container.appendChild(el);
+    if (!obstacleObj) {
+      let el = null;
+      if (typeof document !== 'undefined') {
+        el = document.createElement('div');
+        el.className = 'dynamic-obstacle';
+        if (this.container) {
+          this.container.appendChild(el);
+        }
+      }
+      obstacleObj = {
+        id: this.nextId++,
+        type: type,
+        lane: lane,
+        progress: 0.0,
+        element: el,
+        collided: false,
+        nearMissTriggered: false,
+        active: true
+      };
+    } else {
+      obstacleObj.id = this.nextId++;
+      obstacleObj.type = type;
+      obstacleObj.lane = lane;
+      obstacleObj.progress = 0.0;
+      obstacleObj.collided = false;
+      obstacleObj.nearMissTriggered = false;
+      obstacleObj.active = true;
     }
 
-    const obstacleObj = {
-      id: this.nextId++,
-      type: type,
-      lane: lane,
-      progress: 0.0,
-      element: el,
-      collided: false,
-      nearMissTriggered: false
-    };
+    if (obstacleObj.element) {
+      obstacleObj.element.style.display = 'block';
+      obstacleObj.element.innerHTML = `
+        <div class="target-box" style="border-color:${borderColor}; box-shadow:0 0 16px ${glowColor};">
+          <img src="${imgSrc}" alt="${type}">
+        </div>
+        <div class="target-label" style="color:${borderColor};">${label}</div>
+      `;
+    }
 
     this.obstacles.push(obstacleObj);
+    return obstacleObj;
   }
 
   /**
@@ -99,7 +122,8 @@ export class ObstacleManager {
     const effectiveInterval = Math.max(0.7, this.spawnInterval - (gameState ? gameState.playTime * 0.005 : 0));
     this.spawnTimer += deltaTime;
     if (this.spawnTimer >= effectiveInterval) {
-      this.spawn(playerShip.laneSystem.laneCount);
+      const laneCount = playerShip?.laneSystem?.laneCount || 3;
+      this.spawn(laneCount);
       this.spawnTimer = 0;
     }
 
@@ -112,33 +136,34 @@ export class ObstacleManager {
       obs.progress += deltaTime * speedFactor;
 
       // Tính toán tọa độ phối cảnh
-      const pos = ObstacleLogic.calculatePerspectivePosition(obs.lane, obs.progress, this.lanePositions);
-      obs.element.style.top = `${pos.top}%`;
-      obs.element.style.left = `${pos.left}%`;
-      obs.element.style.transform = `translate(-50%, -50%) scale(${pos.scale})`;
-      obs.element.style.opacity = Math.min(1.0, obs.progress * 3.0);
+      if (obs.element) {
+        const pos = ObstacleLogic.calculatePerspectivePosition(obs.lane, obs.progress, this.lanePositions);
+        obs.element.style.top = `${pos.top}%`;
+        obs.element.style.left = `${pos.left}%`;
+        obs.element.style.transform = `translate(-50%, -50%) scale(${pos.scale})`;
+        obs.element.style.opacity = Math.min(1.0, obs.progress * 3.0);
+      }
 
       // 3. Kiểm tra va chạm khi đi vào vùng tiếp xúc
-      if (!obs.collided && ObstacleLogic.isInHitZone(obs.progress)) {
-        const playerLane = playerShip.laneSystem.currentLaneIndex;
+      if (!obs.collided && this.collisionSystem.isInHitZone(obs.progress)) {
+        const check = this.collisionSystem.checkCollision(playerShip, obs);
 
         // Nếu trùng làn với tàu
-        if (playerLane === obs.lane) {
+        if (check.collided) {
           obs.collided = true;
-          this.handlePlayerCollision(obs, playerShip, gameState);
+          this.collisionSystem.resolveCollision(playerShip, obs, gameState, globalEventBus, this.audioManager);
           this.removeObstacle(i);
           continue;
         }
 
         // Nếu là thiên thạch và ở làn liền kề -> Né sát (Near-Miss)
-        if (!obs.nearMissTriggered && ObstacleLogic.checkNearMiss(obs.type, playerLane, obs.lane)) {
+        if (!obs.nearMissTriggered && check.nearMiss) {
           obs.nearMissTriggered = true;
-          if (gameState) gameState.addNearMissScore();
-          if (this.audioManager) this.audioManager.playSFX('sfxScore');
+          this.collisionSystem.resolveNearMiss(obs, gameState, globalEventBus, this.audioManager);
         }
       }
 
-      // Xóa khi vật thể vượt qua sau đuôi tàu
+      // Thu hồi khi vật thể vượt qua sau đuôi tàu
       if (obs.progress > 1.05) {
         this.removeObstacle(i);
       }
@@ -146,65 +171,30 @@ export class ObstacleManager {
   }
 
   /**
-   * Xử lý tương tác khi người chơi chạm vật thể
+   * Thu hồi một vật thể vào Object Pool
    */
-  handlePlayerCollision(obs, playerShip, gameState) {
-    const playerPhase = playerShip.state.phase;
-    const result = ObstacleLogic.evaluateInteraction(obs.type, playerPhase, playerShip.laneSystem.currentLaneIndex, obs.lane);
-
-    // Khi đang trong chế độ Hyper-Drive: bọc khiên vô địch phá tan thiên thạch và hút tinh thể
-    if (gameState && gameState.isHyperActive) {
-      if (obs.type === 'asteroid') {
-        if (this.audioManager) this.audioManager.playSFX('sfxCrash');
-        globalEventBus.emit('toast', { text: '💥 PHÁ HỦY THIÊN THẠCH!', type: 'gold' });
-        gameState.addNearMissScore();
-        return;
-      } else {
-        if (this.audioManager) this.audioManager.playSFX('sfxScore');
-        gameState.addCrystalScore();
-        globalEventBus.emit('toast', { text: '+200 💎 HÚT NĂNG LƯỢNG!', type: 'cyan' });
-        return;
-      }
-    }
-
-    switch (result.type) {
-      case 'COLLECT_CRYSTAL':
-        if (gameState) gameState.addCrystalScore();
-        if (this.audioManager) this.audioManager.playSFX('sfxScore');
-        globalEventBus.emit('toast', { text: '+100 💎 ĐÚNG PHA!', type: playerPhase === 'CYAN' ? 'cyan' : 'orange' });
-        break;
-
-      case 'DAMAGE':
-        playerShip.takeDamage(result.amount);
-        globalEventBus.emit('toast', { text: '−1 ❤️ VA CHẠM!', type: 'pink' });
-        break;
-
-      case 'HEAL':
-        playerShip.heal(result.amount);
-        globalEventBus.emit('toast', { text: '+1 ❤️ HỒI MÁU!', type: 'cyan' });
-        break;
-
-      case 'SHARD_MULTIPLIER':
-        if (gameState) gameState.activateScoreMultiplier(result.multiplier, result.duration);
-        if (this.audioManager) this.audioManager.playSFX('sfxScore');
-        globalEventBus.emit('toast', { text: '⭐ ×2 ĐIỂM SỐ (8s)!', type: 'gold' });
-        break;
-    }
-  }
-
   removeObstacle(index) {
     const obs = this.obstacles[index];
-    if (obs && obs.element && obs.element.parentElement) {
-      obs.element.parentElement.removeChild(obs.element);
+    if (obs) {
+      obs.active = false;
+      if (obs.element) {
+        obs.element.style.display = 'none';
+      }
+      this.pool.push(obs);
     }
     this.obstacles.splice(index, 1);
   }
 
+  /**
+   * Dọn sạch toàn bộ vật thể và đưa hết vào Object Pool
+   */
   clearAll() {
     for (const obs of this.obstacles) {
-      if (obs.element && obs.element.parentElement) {
-        obs.element.parentElement.removeChild(obs.element);
+      obs.active = false;
+      if (obs.element) {
+        obs.element.style.display = 'none';
       }
+      this.pool.push(obs);
     }
     this.obstacles = [];
     this.spawnTimer = 0;

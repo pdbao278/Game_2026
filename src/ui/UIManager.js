@@ -63,6 +63,7 @@ export class UIManager {
     globalEventBus.on('player-damage', (data) => {
       this.updateHearts(data.health);
       this.triggerScreenShake();
+      this.triggerDamageFlash();
     });
 
     globalEventBus.on('player-heal', (data) => {
@@ -255,6 +256,19 @@ export class UIManager {
       setTimeout(() => { viewport.style.transform = 'translateX(-4px) translateY(3px)'; }, 50);
       setTimeout(() => { viewport.style.transform = 'translateX(2px) translateY(-2px)'; }, 100);
       setTimeout(() => { viewport.style.transform = 'none'; }, 150);
+    }
+  }
+
+  /**
+   * Chớp đỏ toàn màn hình khi bị trừ máu (Damage Vignette Flash)
+   */
+  triggerDamageFlash() {
+    const flashEl = document.getElementById('damageFlash');
+    if (flashEl) {
+      flashEl.classList.add('active');
+      setTimeout(() => {
+        flashEl.classList.remove('active');
+      }, 250);
     }
   }
 

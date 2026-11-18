@@ -34,15 +34,15 @@ Tài liệu theo dõi tiến độ chi tiết theo Kế hoạch Triển khai K�
 
 ## Phase 2: Vòng Lặp Sinh Tồn & Năng Lượng (Core Gameplay Loop)
 
-- [ ] **Task 3: Sinh Vật Cản Thiên Thạch & Vòng Lặp Máu / Game Over (Survival Loop Slice)**
+- [x] **Task 3: Sinh Vật Cản Thiên Thạch & Vòng Lặp Máu / Game Over (Survival Loop Slice)**
   - *Mô tả:* `ObstacleManager` tạo pool thiên thạch `meteor_detailed.glb` cuộn tới. `CollisionSystem` kiểm tra va chạm: trừ 1 HP, rung camera, chớp nháy bất tử 1.5s. HUD hiển thị 3 HP, hết HP hiện Game Over và nút Chơi lại.
   - *Sự phụ thuộc:* Task 1, Task 2
-  - *Trạng thái:* Chưa thực hiện
+  - *Trạng thái:* Đã hoàn thành (100% unit tests passed)
   - *Tiêu chí hoàn thành:*
-    - [ ] Thiên thạch sinh ngẫu nhiên trên các làn và tái sử dụng qua Object Pool.
-    - [ ] Va chạm thiên thạch trừ đúng 1 HP, rung camera và bất tử 1.5s.
-    - [ ] Hết 3 HP hiện màn hình Game Over.
-    - [ ] Nút Chơi lại reset sạch sẽ về 3 HP và bắt đầu ván mới ngay.
+    - [x] Thiên thạch sinh ngẫu nhiên trên các làn và tái sử dụng qua Object Pool.
+    - [x] Va chạm thiên thạch trừ đúng 1 HP, rung camera và bất tử 1.5s.
+    - [x] Hết 3 HP hiện màn hình Game Over.
+    - [x] Nút Chơi lại reset sạch sẽ về 3 HP và bắt đầu ván mới ngay.
 
 - [ ] **Task 4: Tinh Thể Năng Lượng & Hệ Thống Điểm Số (Energy Crystals & Scoring Slice)**
   - *Mô tả:* Sinh Tinh thể Băng (Cyan) và Tinh thể Lửa (Cam). Ăn cùng pha: $+100$ điểm, $+8\%$ thanh Hyper-Drive; va chạm khác pha: mất $1$ HP. Điểm tăng theo thời gian sinh tồn.

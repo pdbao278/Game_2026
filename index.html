@@ -1138,6 +1138,21 @@
       border-color: var(--orange);
       box-shadow: 0 0 36px var(--orange-glow);
     }
+
+    /* Damage Flash Overlay khi bị va chạm */
+    .damage-flash-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 51, 102, 0.45) 0%, rgba(255, 0, 50, 0.75) 100%);
+      box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.8);
+      opacity: 0;
+      transition: opacity 0.08s ease-out;
+      z-index: 40;
+    }
+    .damage-flash-overlay.active {
+      opacity: 1;
+    }
   </style>
 
   <!-- Importmap cho Three.js và GLTFLoader -->
@@ -1224,6 +1239,9 @@
 
     <!-- Three.js Canvas Container nếu muốn bổ sung hiệu ứng 3D -->
     <div id="canvas-container" style="position:fixed; inset:0; z-index:1; pointer-events:none;"></div>
+
+    <!-- Màn hình chớp đỏ khi bị va chạm -->
+    <div class="damage-flash-overlay" id="damageFlash"></div>
 
   </div><!-- /viewport -->
 
