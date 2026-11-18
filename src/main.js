@@ -156,7 +156,7 @@ export class VoidShiftGame {
     if (this.sceneManager && this.environment) {
       const currentSpeed = this.gameState.status === 'PLAYING' ? this.gameState.worldSpeed : 10.0;
       this.environment.update(deltaTime, currentSpeed);
-      this.sceneManager.update(deltaTime, this.playerShip.state.targetX);
+      this.sceneManager.update(deltaTime, this.playerShip.state.targetX, this.gameState.isHyperActive);
       this.sceneManager.render();
     }
   }

@@ -62,15 +62,15 @@ Tài liệu theo dõi tiến độ chi tiết theo Kế hoạch Triển khai K�
 
 ## Phase 3: Cơ Chế Sáng Tạo & Đỉnh Cao (Reflex & Special Abilities)
 
-- [ ] **Task 5: Rủi Ro / Phần Thưởng: Né Sát (Near-Miss) & Siêu Tốc (Hyper-Drive Slice)**
+- [x] **Task 5: Rủi Ro / Phần Thưởng: Né Sát (Near-Miss) & Siêu Tốc (Hyper-Drive Slice)**
   - *Mô tả:* Cơ chế Near-Miss khi lướt sát thiên thạch ở làn kề bên (+250 điểm, +15% nạp, hiện popup toast `⚡ NEAR-MISS EVASION`). Hyper-Drive kích hoạt khi nạp 100%: tăng tốc 1.8x, bọc khiên vô địch phá hủy thiên thạch và từ trường hút mọi tinh thể trong 6s.
   - *Sự phụ thuộc:* Task 3, Task 4
-  - *Trạng thái:* Chưa thực hiện
+  - *Trạng thái:* Đã hoàn thành (100% unit tests passed)
   - *Tiêu chí hoàn thành:*
-    - [ ] Lướt sát thiên thạch hiện popup toast Near-Miss và thưởng điểm/nạp.
-    - [ ] Đầy 100% tự động kích hoạt Hyper-Drive trong 6s với vệt sáng speed lines.
-    - [ ] Trong Hyper-Drive: phá hủy thiên thạch khi chạm và tự hút tinh thể.
-    - [ ] Hết 6s trở về tốc độ bình thường và reset thanh năng lượng về 0%.
+    - [x] Lướt sát thiên thạch hiện popup toast Near-Miss và thưởng điểm/nạp.
+    - [x] Đầy 100% tự động kích hoạt Hyper-Drive trong 6s với vệt sáng speed lines.
+    - [x] Trong Hyper-Drive: phá hủy thiên thạch khi chạm và tự hút tinh thể.
+    - [x] Hết 6s trở về tốc độ bình thường và reset thanh năng lượng về 0%.
 
 - [ ] **Task 6: Vật Phẩm Phụ & Tích Hợp Hệ Thống Âm Thanh (Pickups & Audio Slice)**
   - *Mô tả:* Sinh Lõi Sửa Chữa (hồi +1 HP, tối đa 3) và Mảnh Cộng Hưởng (nhân đôi x2 điểm trong 8s). `AudioManager` nạp SFX (đổi pha, ăn điểm, mất máu, nổ) và BGM `laserpack_bgm.mp3` kèm nút bật/tắt âm thanh trên HUD.

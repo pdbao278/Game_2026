@@ -86,6 +86,18 @@ export class UIManager {
       this.showNearMissToast(data.pts || 250);
     });
 
+    globalEventBus.on('hyper-start', () => {
+      this.showHyperStart();
+    });
+
+    globalEventBus.on('hyper-end', () => {
+      this.showHyperEnd();
+    });
+
+    globalEventBus.on('multiplier-updated', (data) => {
+      this.updateMultiplier(data.multiplier, data.duration);
+    });
+
     globalEventBus.on('toast', (data) => {
       this.showToast(data.text, data.type || 'gold');
     });
@@ -212,6 +224,40 @@ export class UIManager {
     } else {
       this.hyperFill.classList.remove('full');
       if (this.hyperStatus) this.hyperStatus.textContent = `${Math.round(clamped)}%`;
+    }
+  }
+
+  /**
+   * Kích hoạt giao diện Hyper-Drive siêu tốc (Speed lines và âm thanh rít phản lực)
+   */
+  showHyperStart() {
+    const speedLines = document.getElementById('speedLines');
+    if (speedLines) speedLines.classList.add('active');
+    if (this.audioManager) this.audioManager.playSFX('sfxHyper');
+    this.showToast('⚡ HYPER-DRIVE (SIÊU TỐC 6s)!', 'gold');
+  }
+
+  /**
+   * Kết thúc giao diện Hyper-Drive
+   */
+  showHyperEnd() {
+    const speedLines = document.getElementById('speedLines');
+    if (speedLines) speedLines.classList.remove('active');
+  }
+
+  /**
+   * Cập nhật hiệu ứng nhân đôi điểm x2 (Resonance Shard Buff)
+   * @param {number} multiplier Hệ số điểm
+   * @param {number} duration Thời gian còn lại
+   */
+  updateMultiplier(multiplier, duration = 0) {
+    const scoreBox = document.querySelector('.score-box');
+    if (multiplier > 1) {
+      if (this.hudLayer) this.hudLayer.classList.add('gold-buff');
+      if (scoreBox) scoreBox.classList.add('gold-buff');
+    } else {
+      if (this.hudLayer) this.hudLayer.classList.remove('gold-buff');
+      if (scoreBox) scoreBox.classList.remove('gold-buff');
     }
   }
 

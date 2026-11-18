@@ -144,6 +144,14 @@ export class ObstacleManager {
         obs.element.style.opacity = Math.min(1.0, obs.progress * 3.0);
       }
 
+      // Trong chế độ Hyper-Drive: Từ trường hút mọi tinh thể về phía làn tàu đang bay
+      if (gameState && gameState.isHyperActive && obs.type !== 'asteroid' && obs.progress > 0.35) {
+        const playerLane = playerShip?.laneSystem?.currentLaneIndex;
+        if (playerLane !== undefined && obs.lane !== playerLane) {
+          obs.lane = playerLane;
+        }
+      }
+
       // 3. Kiểm tra va chạm khi đi vào vùng tiếp xúc
       if (!obs.collided && this.collisionSystem.isInHitZone(obs.progress)) {
         const check = this.collisionSystem.checkCollision(playerShip, obs);

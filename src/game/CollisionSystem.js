@@ -141,6 +141,9 @@ export class CollisionSystem {
    */
   resolveNearMiss(obstacle, gameState = null, eventBus = globalEventBus, audioManager = null) {
     if (gameState) gameState.addNearMissScore();
+    if (eventBus && eventBus !== globalEventBus) {
+      eventBus.emit('near-miss', { pts: 250 });
+    }
     if (audioManager) audioManager.playSFX('sfxScore');
   }
 }

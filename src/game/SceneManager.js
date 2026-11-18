@@ -76,22 +76,34 @@ export class SceneManager {
    * Cập nhật vị trí camera và hiệu ứng rung theo thời gian thực
    * @param {number} deltaTime Thời gian giữa 2 khung hình
    * @param {number} targetX Tọa độ X mục tiêu của tàu (để camera hơi nghiêng theo)
+   * @param {boolean} isHyperActive Trạng thái siêu tốc Hyper-Drive
    */
-  update(deltaTime, targetX = 0) {
+  update(deltaTime, targetX = 0, isHyperActive = false) {
     // Camera bám theo nhẹ trục X của tàu để tăng cảm giác tốc độ
     const targetCamX = targetX * 0.35;
     this.camera.position.x += (targetCamX - this.camera.position.x) * Math.min(deltaTime * 8.0, 1.0);
+
+    // Hiệu ứng giật lùi camera & nới rộng góc nhìn (FOV) khi Hyper-Drive kích hoạt
+    const targetFOV = isHyperActive ? 78 : 65;
+    const targetCamY = isHyperActive ? 3.8 : this.cameraBasePos.y;
+    const targetCamZ = isHyperActive ? 8.2 : this.cameraBasePos.z;
+
+    if (Math.abs(this.camera.fov - targetFOV) > 0.1) {
+      this.camera.fov += (targetFOV - this.camera.fov) * Math.min(deltaTime * 4.0, 1.0);
+      this.camera.updateProjectionMatrix();
+    }
+    this.camera.position.z += (targetCamZ - this.camera.position.z) * Math.min(deltaTime * 4.0, 1.0);
 
     // Tính toán độ rung nếu có
     if (this.shakeIntensity > 0.001) {
       const offsetX = (Math.random() - 0.5) * 2 * this.shakeIntensity;
       const offsetY = (Math.random() - 0.5) * 2 * this.shakeIntensity;
       this.camera.position.x += offsetX;
-      this.camera.position.y = this.cameraBasePos.y + offsetY;
+      this.camera.position.y = targetCamY + offsetY;
 
       this.shakeIntensity = Math.max(0, this.shakeIntensity - this.shakeDecay * deltaTime);
     } else {
-      this.camera.position.y = this.cameraBasePos.y;
+      this.camera.position.y += (targetCamY - this.camera.position.y) * Math.min(deltaTime * 4.0, 1.0);
     }
 
     this.camera.lookAt(this.camera.position.x * 0.5, this.cameraTargetPos.y, this.cameraTargetPos.z);
