@@ -29,6 +29,42 @@ export class InputManager {
       window.addEventListener('touchend', this.onTouchEnd, { passive: false });
       window.addEventListener('mousedown', this.onMouseDown);
     }
+
+    // Gắn sự kiện các nút trợ năng cảm ứng ảo trên Điện thoại
+    if (typeof document !== 'undefined') {
+      this.btnTouchLeft = document.getElementById('btnTouchLeft');
+      this.btnTouchPhase = document.getElementById('btnTouchPhase');
+      this.btnTouchRight = document.getElementById('btnTouchRight');
+
+      this.handleTouchLeft = (e) => {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+        if (this.enabled && this.playerShip) this.playerShip.moveLeft();
+      };
+      this.handleTouchPhase = (e) => {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+        if (this.enabled && this.playerShip) this.playerShip.switchPhase();
+      };
+      this.handleTouchRight = (e) => {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+        if (this.enabled && this.playerShip) this.playerShip.moveRight();
+      };
+
+      if (this.btnTouchLeft) {
+        this.btnTouchLeft.addEventListener('touchstart', this.handleTouchLeft, { passive: false });
+        this.btnTouchLeft.addEventListener('click', this.handleTouchLeft);
+      }
+      if (this.btnTouchPhase) {
+        this.btnTouchPhase.addEventListener('touchstart', this.handleTouchPhase, { passive: false });
+        this.btnTouchPhase.addEventListener('click', this.handleTouchPhase);
+      }
+      if (this.btnTouchRight) {
+        this.btnTouchRight.addEventListener('touchstart', this.handleTouchRight, { passive: false });
+        this.btnTouchRight.addEventListener('click', this.handleTouchRight);
+      }
+    }
   }
 
   detachListeners() {
@@ -37,6 +73,19 @@ export class InputManager {
       window.removeEventListener('touchstart', this.onTouchStart);
       window.removeEventListener('touchend', this.onTouchEnd);
       window.removeEventListener('mousedown', this.onMouseDown);
+    }
+
+    if (this.btnTouchLeft) {
+      this.btnTouchLeft.removeEventListener('touchstart', this.handleTouchLeft);
+      this.btnTouchLeft.removeEventListener('click', this.handleTouchLeft);
+    }
+    if (this.btnTouchPhase) {
+      this.btnTouchPhase.removeEventListener('touchstart', this.handleTouchPhase);
+      this.btnTouchPhase.removeEventListener('click', this.handleTouchPhase);
+    }
+    if (this.btnTouchRight) {
+      this.btnTouchRight.removeEventListener('touchstart', this.handleTouchRight);
+      this.btnTouchRight.removeEventListener('click', this.handleTouchRight);
     }
   }
 

@@ -68,4 +68,28 @@ describe('Tính năng Mới: Tạm Dừng / Chơi Lại và Chế độ 5 Làn U
     assert.ok(html.includes('font-size: 0.92rem;'), 'CSS .toast phải thu gọn font-size không quá to che khuất');
     assert.ok(html.includes('top: 114px;'), 'CSS .near-miss-popup phải đặt ở top cao (114px)');
   });
+
+  it('Hỗ trợ giao diện Responsive toàn diện cho điện thoại di động (Mobile/Tablet)', () => {
+    const htmlPath = path.resolve('index.html');
+    const html = fs.readFileSync(htmlPath, 'utf8');
+
+    // 1. Thẻ Meta Viewport tối ưu cho thiết bị di động
+    assert.ok(html.includes('viewport-fit=cover'), 'Phải hỗ trợ viewport-fit=cover cho tai thỏ iPhone');
+    assert.ok(html.includes('user-scalable=no'), 'Phải khóa user-scalable để tránh double tap phóng to');
+
+    // 2. Media query responsive di động
+    assert.ok(html.includes('@media (max-width: 768px)'), 'Phải có media query cho mobile tablet');
+    assert.ok(html.includes('@media (max-width: 380px)'), 'Phải có media query cho màn hình nhỏ');
+    assert.ok(html.includes('@media (orientation: landscape) and (max-height: 500px)'), 'Phải hỗ trợ xoay ngang điện thoại');
+
+    // 3. Thanh trợ năng cảm ứng ảo trên điện thoại (Mobile Touch Controls)
+    assert.ok(html.includes('id="mobileTouchBar"'), 'Phải có thanh trợ năng cảm ứng mobileTouchBar');
+    assert.ok(html.includes('id="btnTouchLeft"'), 'Phải có nút ảo btnTouchLeft');
+    assert.ok(html.includes('id="btnTouchPhase"'), 'Phải có nút ảo btnTouchPhase');
+    assert.ok(html.includes('id="btnTouchRight"'), 'Phải có nút ảo btnTouchRight');
+
+    // 4. Ngăn chặn cuộn trang và kéo tải lại (overscroll-behavior & touch-action)
+    assert.ok(html.includes('touch-action: manipulation;'), 'Phải có touch-action manipulation');
+    assert.ok(html.includes('overscroll-behavior: none;'), 'Phải có overscroll-behavior none');
+  });
 });
